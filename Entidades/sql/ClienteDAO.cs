@@ -43,35 +43,83 @@ namespace Entidades.sql
             }
         }
 
-        public static Cliente LeerPorDni(int dni)
+        public static List<Cliente> LeerClientes()
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(ClienteDAO.stringConnection))
                 {
-                    string query = "SELECT * FROM CLIENTES WHERE DNI = @DNI";
+                    List<Cliente> listaClientes = new List<Cliente>();
+                    string query = "SELECT * FROM CLIENTES";
                     SqlCommand command = new SqlCommand(query, connection);
-                    command.Parameters.AddWithValue("@DNI", dni);
-
                     connection.Open();
                     SqlDataReader reader = command.ExecuteReader();
 
                     if (reader.HasRows)
                     {
-                        reader.Read();
-                        return new Cliente(reader.GetString(1), reader.GetString(2), reader.GetInt32(3), reader.GetInt32(4));
+                        while (reader.Read())
+                        {
+                            Cliente cliente = new Cliente(reader.GetString(1), reader.GetString(2), reader.GetInt32(3), reader.GetInt32(4));
+                            listaClientes.Add(cliente);
+                        }
+                        return listaClientes;
                     }
                     else
                     {
-                        throw new ElementoNoEncontradoException("No existe ningún cliente con ese DNI");
+                        throw new ElementoNoEncontradoException("Tabla Vacia");
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new BaseDeDatosException("Error al obtener un elemento por DNI", ex);
+                throw new BaseDeDatosException("Error al obtener informacion desde la base de datos", ex);
             }
         }
 
+        public static Cliente LeerClientePorDni(int dni)
+        {
+            try
+            {
+                List<Cliente> listaClientes = ClienteDAO.LeerClientes();
+
+                foreach (Cliente cliente in listaClientes)
+                {
+                    if (cliente.Dni == dni)
+                    {
+                        return cliente;
+                    }
+                }
+
+                throw new ElementoNoEncontradoException("Ningún cliente encontrado para ese DNI");
+            }
+            catch (Exception ex)
+            {
+                
+                throw new ElementoNoEncontradoException("Error al buscar cliente", ex);
+            }
+        }
+
+        public static Cliente LeerClientePor(int dni)
+        {
+            try
+            {
+                List<Cliente> listaClientes = ClienteDAO.LeerClientes();
+
+                foreach (Cliente cliente in listaClientes)
+                {
+                    if (cliente.Dni == dni)
+                    {
+                        return cliente;
+                    }
+                }
+
+                throw new ElementoNoEncontradoException("Ningún cliente encontrado para ese DNI");
+            }
+            catch (Exception ex)
+            {
+
+                throw new ElementoNoEncontradoException("Error al buscar cliente", ex);
+            }
+        }
     }
 }

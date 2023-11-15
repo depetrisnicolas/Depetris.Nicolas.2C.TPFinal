@@ -15,14 +15,14 @@ namespace Entidades
         private string patente;
         private bool disponible;
 
-        public Vehiculo(string marca, string modelo, int anio, string tipo, string patente)
+        public Vehiculo(string marca, string modelo, int anio, string tipo, string patente, bool disponible)
         {
             this.marca = marca;
             this.modelo = modelo;
             this.anio = anio;
             this.tipo = tipo;
             this.patente = patente;
-            this.disponible = true;
+            this.disponible = disponible;
         }
 
         public string Marca { get => this.marca; set => this.marca = value; }

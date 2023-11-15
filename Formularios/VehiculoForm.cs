@@ -40,7 +40,7 @@ namespace Formularios
             else
             {
                 int.TryParse(anio, out int numAnio);
-                Vehiculo nuevoVehiculo = new Vehiculo(marca, modelo, numAnio, tipo, patente);
+                Vehiculo nuevoVehiculo = new Vehiculo(marca, modelo, numAnio, tipo, patente, true);
                 VehiculoDAO.Guardar(nuevoVehiculo);
             }
         }
