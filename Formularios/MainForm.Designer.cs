@@ -76,6 +76,7 @@
             Controls.Add(btnAgregarCliente);
             Name = "MainForm";
             Text = "UTN Rent Car";
+            Load += MainForm_Load;
             ResumeLayout(false);
         }
 

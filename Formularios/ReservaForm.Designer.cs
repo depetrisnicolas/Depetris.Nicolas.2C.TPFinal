@@ -43,8 +43,6 @@
             btnCancelarReserva = new Button();
             label3 = new Label();
             txtNombreYApellido = new TextBox();
-            btnActualizar = new Button();
-            btnVerReservas = new Button();
             SuspendLayout();
             // 
             // lstReservas
@@ -60,17 +58,16 @@
             // 
             lstVehiculosDisp.FormattingEnabled = true;
             lstVehiculosDisp.ItemHeight = 15;
-            lstVehiculosDisp.Location = new Point(465, 49);
+            lstVehiculosDisp.Location = new Point(440, 49);
             lstVehiculosDisp.Name = "lstVehiculosDisp";
-            lstVehiculosDisp.Size = new Size(181, 214);
+            lstVehiculosDisp.Size = new Size(206, 214);
             lstVehiculosDisp.TabIndex = 1;
-            lstVehiculosDisp.SelectedIndexChanged += lstVehiculosDisp_SelectedIndexChanged;
             // 
             // lblVehiculosDisp
             // 
             lblVehiculosDisp.AutoSize = true;
             lblVehiculosDisp.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            lblVehiculosDisp.Location = new Point(465, 25);
+            lblVehiculosDisp.Location = new Point(485, 25);
             lblVehiculosDisp.Name = "lblVehiculosDisp";
             lblVehiculosDisp.Size = new Size(161, 21);
             lblVehiculosDisp.TabIndex = 2;
@@ -169,6 +166,7 @@
             btnCancelarReserva.TabIndex = 12;
             btnCancelarReserva.Text = "Cancelar Reserva";
             btnCancelarReserva.UseVisualStyleBackColor = false;
+            btnCancelarReserva.Click += btnCancelarReserva_Click;
             // 
             // label3
             // 
@@ -187,33 +185,11 @@
             txtNombreYApellido.Size = new Size(211, 23);
             txtNombreYApellido.TabIndex = 14;
             // 
-            // btnActualizar
-            // 
-            btnActualizar.Location = new Point(384, 145);
-            btnActualizar.Name = "btnActualizar";
-            btnActualizar.Size = new Size(75, 23);
-            btnActualizar.TabIndex = 15;
-            btnActualizar.Text = "Actualizar";
-            btnActualizar.UseVisualStyleBackColor = true;
-            btnActualizar.Click += btnVer_Click;
-            // 
-            // btnVerReservas
-            // 
-            btnVerReservas.Location = new Point(284, 344);
-            btnVerReservas.Name = "btnVerReservas";
-            btnVerReservas.Size = new Size(89, 23);
-            btnVerReservas.TabIndex = 16;
-            btnVerReservas.Text = "Ver Reservas";
-            btnVerReservas.UseVisualStyleBackColor = true;
-            btnVerReservas.Click += btnVerReservas_Click;
-            // 
             // ReservaForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(683, 644);
-            Controls.Add(btnVerReservas);
-            Controls.Add(btnActualizar);
             Controls.Add(txtNombreYApellido);
             Controls.Add(label3);
             Controls.Add(btnCancelarReserva);
@@ -253,7 +229,5 @@
         private Button btnCancelarReserva;
         private Label label3;
         private TextBox txtNombreYApellido;
-        private Button btnActualizar;
-        private Button btnVerReservas;
     }
 }

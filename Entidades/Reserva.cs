@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entidades.interfaz;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entidades
 {
-    public class Reserva
+    public class Reserva 
     {
         private Cliente cliente;
         private int dniCliente;
@@ -18,7 +19,7 @@ namespace Entidades
         private static float tarifaCamioneta;
         private bool vigente;
 
-        public Reserva(Cliente cliente, int dniCliente, Vehiculo vehiculo, string patenteVehiculo, DateTime fechaInicio, DateTime fechaFin)
+        public Reserva(Cliente cliente, int dniCliente, Vehiculo vehiculo, string patenteVehiculo, DateTime fechaInicio, DateTime fechaFin, bool vigente)
         {
             this.cliente = cliente;
             this.dniCliente = dniCliente;
@@ -28,7 +29,7 @@ namespace Entidades
             this.fechaFin = fechaFin;
             Reserva.tarifaAuto = 20000;
             Reserva.tarifaCamioneta = 35000;
-            this.vigente = true;
+            this.vigente = vigente;
         }
 
         public Cliente Cliente { get => this.cliente; set => this.cliente = value; }

@@ -12,6 +12,7 @@ using Entidades;
 using Entidades.excepciones;
 using System.Diagnostics.Eventing.Reader;
 using System.Runtime.CompilerServices;
+using Entidades.metodoExtension;
 
 namespace Formularios
 {
@@ -65,10 +66,6 @@ namespace Formularios
             }
         }
 
-        private void lstVehiculosDisp_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
         private void CargarListaVehiculosDisp()
         {
             this.lstVehiculosDisp.Items.Clear();
@@ -81,23 +78,13 @@ namespace Formularios
             }
         }
 
-        private void btnVer_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                this.CargarListaVehiculosDisp();
-            }
-            catch (BaseDeDatosException)
-            {
-                MessageBox.Show("No hay ningún elemento para leer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void ReservaForm_Load(object sender, EventArgs e)
         {
             this.dtpDesde.MinDate = DateTime.Now;
             this.dtpHasta.MinDate = DateTime.Now.AddDays(1);
             this.ListaReservas = ReservaDAO.LeerReservas();
+            this.CargarListaReservas();
+            this.CargarListaVehiculosDisp();
         }
 
         private void btnConfirmarReserva_Click(object sender, EventArgs e)
@@ -114,30 +101,42 @@ namespace Formularios
                 Vehiculo vehiculoSelecc = (Vehiculo)this.lstVehiculosDisp.SelectedItem;
                 vehiculoSelecc.Disponible = false;
                 VehiculoDAO.Modificar(vehiculoSelecc, vehiculoSelecc.Patente);
-                
 
-                Reserva nuevaReserva = new Reserva(clienteBuscado, clienteBuscado.Dni, vehiculoSelecc, vehiculoSelecc.Patente, fechaInicio, fechaFin);
+
+                Reserva nuevaReserva = new Reserva(clienteBuscado, clienteBuscado.Dni, vehiculoSelecc, vehiculoSelecc.Patente,
+                    fechaInicio, fechaFin, true);
                 MessageBox.Show("La reserva se realizó con éxito", "Reserva exitosa", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                ReservaDAO.Guardar(nuevaReserva);
+                ReservaDAO reservaDAO = new ReservaDAO("Reservas");
+                reservaDAO.Guardar(nuevaReserva);
                 this.ListaReservas.Add(nuevaReserva);
             }
+            this.CargarListaReservas();
+            this.CargarListaVehiculosDisp();
         }
 
         private void CargarListaReservas()
         {
             this.lstReservas.Items.Clear();
-            foreach (Reserva reserva in this.ListaReservas)
+            foreach (Reserva reserva in this.ListaReservas.FiltrarReservasVigentes())
             {
                 this.lstReservas.Items.Add(reserva);
             }
         }
 
-        private void btnVerReservas_Click(object sender, EventArgs e)
+        private void btnCancelarReserva_Click(object sender, EventArgs e)
         {
-            if (this.ListaReservas is not null)
+            if (this.lstReservas.SelectedItem is not null)
             {
-                this.CargarListaReservas();
+                Reserva reservaSeleccionada = (Reserva)this.lstReservas.SelectedItem;
+                reservaSeleccionada.Vigente = false;
+                ReservaDAO.Modificar(reservaSeleccionada, reservaSeleccionada.DniCliente);
+                Vehiculo vehiculoAModificar = reservaSeleccionada.Vehiculo;
+                vehiculoAModificar.Disponible = true;
+                VehiculoDAO.Modificar(vehiculoAModificar, reservaSeleccionada.PatenteVehiculo);
+                MessageBox.Show("La reserva se canceló con éxito", "Reserva cancelada", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
+            this.CargarListaReservas();
+            this.CargarListaVehiculosDisp();
         }
     }
 }

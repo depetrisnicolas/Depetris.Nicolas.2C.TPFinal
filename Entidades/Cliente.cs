@@ -1,13 +1,16 @@
-﻿namespace Entidades
+﻿using Entidades.excepciones;
+using Entidades.interfaz;
+
+namespace Entidades
 {
-    public class Cliente
+    public class Cliente 
     {
         private string nombre;
         private string apellido;
         private int dni;
-        private int telefono;
+        private string telefono;
 
-        public Cliente(string nombre, string apellido, int dni, int telefono)
+        public Cliente(string nombre, string apellido, int dni, string telefono)
         {
             this.nombre = nombre;
             this.apellido = apellido;
@@ -18,7 +21,7 @@
         public string Nombre { get => this.nombre; set => this.nombre = value; }
         public string Apellido { get => this.apellido; set => this.apellido = value; }
         public int Dni { get => this.dni; set => this.dni = value; }
-        public int Telefono { get => this.telefono; set => this.telefono = value; }
+        public string Telefono { get => this.telefono; set => this.telefono = value; }
 
         public override string ToString() 
         {

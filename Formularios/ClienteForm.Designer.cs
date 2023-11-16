@@ -51,14 +51,14 @@
             txtDni.Location = new Point(58, 185);
             txtDni.Name = "txtDni";
             txtDni.Size = new Size(137, 23);
-            txtDni.TabIndex = 1;
+            txtDni.TabIndex = 2;
             // 
             // txtApellido
             // 
             txtApellido.Location = new Point(58, 122);
             txtApellido.Name = "txtApellido";
             txtApellido.Size = new Size(137, 23);
-            txtApellido.TabIndex = 2;
+            txtApellido.TabIndex = 1;
             // 
             // lblNombre
             // 
@@ -92,16 +92,16 @@
             txtTelefono.Location = new Point(58, 248);
             txtTelefono.Name = "txtTelefono";
             txtTelefono.Size = new Size(137, 23);
-            txtTelefono.TabIndex = 6;
+            txtTelefono.TabIndex = 3;
             // 
             // lblTelefono
             // 
             lblTelefono.AutoSize = true;
             lblTelefono.Location = new Point(57, 230);
             lblTelefono.Name = "lblTelefono";
-            lblTelefono.Size = new Size(55, 15);
+            lblTelefono.Size = new Size(110, 15);
             lblTelefono.TabIndex = 7;
-            lblTelefono.Text = "Telefono:";
+            lblTelefono.Text = "Telefono sin prefijo:";
             // 
             // btnGuardar
             // 
@@ -109,7 +109,7 @@
             btnGuardar.Location = new Point(73, 303);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(105, 33);
-            btnGuardar.TabIndex = 12;
+            btnGuardar.TabIndex = 4;
             btnGuardar.Text = "GUARDAR";
             btnGuardar.UseVisualStyleBackColor = true;
             btnGuardar.Click += btnGuardar_Click;
@@ -130,6 +130,7 @@
             Controls.Add(txtNombre);
             Name = "ClienteForm";
             Text = "Alta Cliente";
+            Load += ClienteForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }

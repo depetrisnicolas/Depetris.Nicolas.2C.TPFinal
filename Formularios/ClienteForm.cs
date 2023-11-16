@@ -17,6 +17,7 @@ namespace Formularios
     public partial class ClienteForm : Form
     {
         private MainForm formMain;
+
         public ClienteForm(MainForm mainForm)
         {
             InitializeComponent();
@@ -37,11 +38,13 @@ namespace Formularios
             else
             {
                 int.TryParse(dni, out int numDni);
-                int.TryParse(telefono, out int numTelefono);
-                Cliente nuevoCliente = new Cliente(nombre, apellido, numDni, numTelefono);
-                ClienteDAO.Guardar(nuevoCliente);
+                Cliente nuevoCliente = new Cliente(nombre, apellido, numDni, telefono);
+                ClienteDAO clientesDAO = new ClienteDAO("Clientes");
+                clientesDAO.Guardar(nuevoCliente);
                 this.formMain.ListaClientes.Add(nuevoCliente);
+                this.Close();
             }
+
         }
 
 
@@ -66,12 +69,16 @@ namespace Formularios
 
         private string ValidarTelefono(string telefono)
         {
-            if (!Regex.IsMatch(telefono, @"^\d{10}$"))
+            if (!Regex.IsMatch(telefono, @"^\d{8}$"))
             {
                 return null;
             }
             return telefono;
         }
 
+        private void ClienteForm_Load(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

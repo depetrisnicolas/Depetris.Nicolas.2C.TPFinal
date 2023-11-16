@@ -5,24 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using Entidades.excepciones;
+using Entidades.metodoExtension;
+using Entidades.interfaz;
 
 namespace Entidades.sql
 {
-    public class ClienteDAO
+    public class ClienteDAO : IConexionABase, IGuardar<Cliente>
     {
         private static string stringConnection;
+        private string tabla;
 
         static ClienteDAO()
         {
             ClienteDAO.stringConnection = "Server=.;Database=Depetris.Nicolas.2C.TPFinal;Trusted_Connection=True;";
         }
 
+        public ClienteDAO(string tabla)
+        {
+            this.tabla = tabla;
+        }
 
-        public static void Guardar(Cliente cliente)
+        public static string StringConnection { get => ClienteDAO.stringConnection; set => ClienteDAO.stringConnection = value; }
+
+        public void Guardar(Cliente cliente)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ClienteDAO.stringConnection))
+                using (SqlConnection connection = new SqlConnection(ClienteDAO.StringConnection))
                 {
                     string query = "INSERT INTO CLIENTES (NOMBRE, APELLIDO, DNI, TELEFONO) " +
                                    "VALUES (@NOMBRE, @APELLIDO, @DNI, @TELEFONO); SELECT @@IDENTITY";
@@ -31,7 +40,7 @@ namespace Entidades.sql
                     command.Parameters.AddWithValue("@NOMBRE", cliente.Nombre);
                     command.Parameters.AddWithValue("@APELLIDO", cliente.Apellido);
                     command.Parameters.AddWithValue("@DNI", cliente.Dni);
-                    command.Parameters.AddWithValue("@TELEFONO", cliente.Telefono);
+                    command.Parameters.AddWithValue("@TELEFONO", cliente.Telefono.AgregarPrefijo("011"));
 
                     connection.Open();
                     command.ExecuteNonQuery();
@@ -39,7 +48,7 @@ namespace Entidades.sql
             }
             catch (Exception ex)
             {
-
+                throw new BaseDeDatosException($"Error al guardar cliente en tabla {this.tabla}", ex);
             }
         }
 
@@ -47,7 +56,7 @@ namespace Entidades.sql
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(ClienteDAO.stringConnection))
+                using (SqlConnection connection = new SqlConnection(ClienteDAO.StringConnection))
                 {
                     List<Cliente> listaClientes = new List<Cliente>();
                     string query = "SELECT * FROM CLIENTES";
@@ -59,7 +68,7 @@ namespace Entidades.sql
                     {
                         while (reader.Read())
                         {
-                            Cliente cliente = new Cliente(reader.GetString(1), reader.GetString(2), reader.GetInt32(3), reader.GetInt32(4));
+                            Cliente cliente = new Cliente(reader.GetString(1), reader.GetString(2), reader.GetInt32(3), reader.GetString(4));
                             listaClientes.Add(cliente);
                         }
                         return listaClientes;
@@ -73,52 +82,6 @@ namespace Entidades.sql
             catch (Exception ex)
             {
                 throw new BaseDeDatosException("Error al obtener informacion desde la base de datos", ex);
-            }
-        }
-
-        public static Cliente LeerClientePorDni(int dni)
-        {
-            try
-            {
-                List<Cliente> listaClientes = ClienteDAO.LeerClientes();
-
-                foreach (Cliente cliente in listaClientes)
-                {
-                    if (cliente.Dni == dni)
-                    {
-                        return cliente;
-                    }
-                }
-
-                throw new ElementoNoEncontradoException("Ningún cliente encontrado para ese DNI");
-            }
-            catch (Exception ex)
-            {
-                
-                throw new ElementoNoEncontradoException("Error al buscar cliente", ex);
-            }
-        }
-
-        public static Cliente LeerClientePor(int dni)
-        {
-            try
-            {
-                List<Cliente> listaClientes = ClienteDAO.LeerClientes();
-
-                foreach (Cliente cliente in listaClientes)
-                {
-                    if (cliente.Dni == dni)
-                    {
-                        return cliente;
-                    }
-                }
-
-                throw new ElementoNoEncontradoException("Ningún cliente encontrado para ese DNI");
-            }
-            catch (Exception ex)
-            {
-
-                throw new ElementoNoEncontradoException("Error al buscar cliente", ex);
             }
         }
     }

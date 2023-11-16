@@ -7,10 +7,10 @@ namespace Pruebas
     {
         static void Main(string[] args)
         {
-            List<Vehiculo> listaVehiculos = VehiculoDAO.LeerVehiculos();
-            foreach (Vehiculo vehiculo in listaVehiculos)
+            List<Cliente> listaClientes = ClienteDAO.LeerClientes();
+            foreach (Cliente cliente in listaClientes)
             {
-                Console.WriteLine(vehiculo.Disponible);
+                Console.WriteLine(cliente);
             }
 
         }

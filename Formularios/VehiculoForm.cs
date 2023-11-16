@@ -30,8 +30,6 @@ namespace Formularios
             string patente = ValidarCadena(this.txtPatente.Text);
 
 
-
-
             if (string.IsNullOrEmpty(marca) || string.IsNullOrEmpty(modelo) || string.IsNullOrEmpty(anio) || string.IsNullOrEmpty(tipo)
                 || string.IsNullOrEmpty(patente))
             {
@@ -41,8 +39,11 @@ namespace Formularios
             {
                 int.TryParse(anio, out int numAnio);
                 Vehiculo nuevoVehiculo = new Vehiculo(marca, modelo, numAnio, tipo, patente, true);
-                VehiculoDAO.Guardar(nuevoVehiculo);
+                VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
+                vehiculoDAO.Guardar(nuevoVehiculo);
+                
             }
+            this.Close();
         }
 
         private string ValidarAnio(string anio)

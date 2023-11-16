@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entidades.interfaz;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entidades
 {
-    public class Vehiculo
+    public class Vehiculo 
     {
         private string marca;
         private string modelo;

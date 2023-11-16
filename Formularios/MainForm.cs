@@ -1,4 +1,5 @@
 using Entidades;
+using Entidades.excepciones;
 using Entidades.sql;
 
 namespace Formularios
@@ -35,10 +36,21 @@ namespace Formularios
 
         private void btnReserva_Click(object sender, EventArgs e)
         {
-            this.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+            try
+            {
+                this.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+                this.formReserva = new ReservaForm(this);
+                this.formReserva.ShowDialog();
+            }
+            catch (BaseDeDatosException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
             this.ListaClientes = ClienteDAO.LeerClientes();
-            this.formReserva = new ReservaForm(this);
-            this.formReserva.ShowDialog();
         }
     }
 }
