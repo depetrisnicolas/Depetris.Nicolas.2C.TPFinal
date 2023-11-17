@@ -21,6 +21,7 @@ namespace Formularios
         public ClienteForm(MainForm mainForm)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.formMain = mainForm;
         }
 
@@ -78,7 +79,7 @@ namespace Formularios
 
         private void ClienteForm_Load(object sender, EventArgs e)
         {
-            
+
         }
     }
 }

@@ -40,7 +40,7 @@
             btnAgregarCliente.Name = "btnAgregarCliente";
             btnAgregarCliente.Size = new Size(184, 92);
             btnAgregarCliente.TabIndex = 0;
-            btnAgregarCliente.Text = "Agregar Cliente";
+            btnAgregarCliente.Text = "Alta Cliente";
             btnAgregarCliente.UseVisualStyleBackColor = true;
             btnAgregarCliente.Click += btnAgregarCliente_Click;
             // 
@@ -51,7 +51,7 @@
             btnAgregarVehiculo.Name = "btnAgregarVehiculo";
             btnAgregarVehiculo.Size = new Size(184, 92);
             btnAgregarVehiculo.TabIndex = 1;
-            btnAgregarVehiculo.Text = "Agregar vehiculo";
+            btnAgregarVehiculo.Text = "Alta Vehiculo";
             btnAgregarVehiculo.UseVisualStyleBackColor = true;
             btnAgregarVehiculo.Click += btnAgregarVehiculo_Click;
             // 
@@ -74,6 +74,7 @@
             Controls.Add(btnReserva);
             Controls.Add(btnAgregarVehiculo);
             Controls.Add(btnAgregarCliente);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "MainForm";
             Text = "UTN Rent Car";
             Load += MainForm_Load;

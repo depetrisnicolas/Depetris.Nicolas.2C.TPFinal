@@ -16,6 +16,7 @@ namespace Formularios
         public MainForm()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
 

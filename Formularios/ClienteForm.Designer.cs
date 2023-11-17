@@ -128,6 +128,7 @@
             Controls.Add(txtApellido);
             Controls.Add(txtDni);
             Controls.Add(txtNombre);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "ClienteForm";
             Text = "Alta Cliente";
             Load += ClienteForm_Load;

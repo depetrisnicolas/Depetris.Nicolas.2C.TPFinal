@@ -43,6 +43,8 @@
             btnCancelarReserva = new Button();
             label3 = new Label();
             txtNombreYApellido = new TextBox();
+            btnExportar = new Button();
+            btnImportarVehiculos = new Button();
             SuspendLayout();
             // 
             // lstReservas
@@ -58,9 +60,9 @@
             // 
             lstVehiculosDisp.FormattingEnabled = true;
             lstVehiculosDisp.ItemHeight = 15;
-            lstVehiculosDisp.Location = new Point(440, 49);
+            lstVehiculosDisp.Location = new Point(410, 49);
             lstVehiculosDisp.Name = "lstVehiculosDisp";
-            lstVehiculosDisp.Size = new Size(206, 214);
+            lstVehiculosDisp.Size = new Size(236, 244);
             lstVehiculosDisp.TabIndex = 1;
             // 
             // lblVehiculosDisp
@@ -148,7 +150,7 @@
             // 
             btnConfirmarReserva.BackColor = SystemColors.ActiveCaption;
             btnConfirmarReserva.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            btnConfirmarReserva.Location = new Point(111, 286);
+            btnConfirmarReserva.Location = new Point(99, 312);
             btnConfirmarReserva.Name = "btnConfirmarReserva";
             btnConfirmarReserva.Size = new Size(154, 34);
             btnConfirmarReserva.TabIndex = 11;
@@ -160,7 +162,7 @@
             // 
             btnCancelarReserva.BackColor = Color.IndianRed;
             btnCancelarReserva.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            btnCancelarReserva.Location = new Point(403, 286);
+            btnCancelarReserva.Location = new Point(440, 312);
             btnCancelarReserva.Name = "btnCancelarReserva";
             btnCancelarReserva.Size = new Size(154, 34);
             btnCancelarReserva.TabIndex = 12;
@@ -185,11 +187,37 @@
             txtNombreYApellido.Size = new Size(211, 23);
             txtNombreYApellido.TabIndex = 14;
             // 
+            // btnExportar
+            // 
+            btnExportar.BackColor = SystemColors.ControlDark;
+            btnExportar.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            btnExportar.Location = new Point(652, 488);
+            btnExportar.Name = "btnExportar";
+            btnExportar.Size = new Size(127, 29);
+            btnExportar.TabIndex = 15;
+            btnExportar.Text = "Exportar Reservas";
+            btnExportar.UseVisualStyleBackColor = false;
+            btnExportar.Click += btnExportarReservas_Click;
+            // 
+            // btnImportarVehiculos
+            // 
+            btnImportarVehiculos.BackColor = SystemColors.ControlDark;
+            btnImportarVehiculos.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            btnImportarVehiculos.Location = new Point(652, 151);
+            btnImportarVehiculos.Name = "btnImportarVehiculos";
+            btnImportarVehiculos.Size = new Size(127, 29);
+            btnImportarVehiculos.TabIndex = 16;
+            btnImportarVehiculos.Text = "Importar Flota";
+            btnImportarVehiculos.UseVisualStyleBackColor = false;
+            btnImportarVehiculos.Click += btnImportarVehiculos_Click;
+            // 
             // ReservaForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(683, 644);
+            ClientSize = new Size(800, 644);
+            Controls.Add(btnImportarVehiculos);
+            Controls.Add(btnExportar);
             Controls.Add(txtNombreYApellido);
             Controls.Add(label3);
             Controls.Add(btnCancelarReserva);
@@ -205,6 +233,7 @@
             Controls.Add(lblVehiculosDisp);
             Controls.Add(lstVehiculosDisp);
             Controls.Add(lstReservas);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "ReservaForm";
             Text = "ReservaForm";
             Load += ReservaForm_Load;
@@ -229,5 +258,7 @@
         private Button btnCancelarReserva;
         private Label label3;
         private TextBox txtNombreYApellido;
+        private Button btnExportar;
+        private Button btnImportarVehiculos;
     }
 }

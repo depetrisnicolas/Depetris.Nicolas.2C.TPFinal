@@ -13,6 +13,11 @@ using Entidades.excepciones;
 using System.Diagnostics.Eventing.Reader;
 using System.Runtime.CompilerServices;
 using Entidades.metodoExtension;
+using System.Text.Json;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using Microsoft.VisualBasic.ApplicationServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Diagnostics;
 
 namespace Formularios
 {
@@ -21,9 +26,11 @@ namespace Formularios
         private MainForm formMain;
         private List<Reserva> listaReservas;
 
+
         public ReservaForm(MainForm mainForm)
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.formMain = mainForm;
         }
 
@@ -91,24 +98,21 @@ namespace Formularios
         {
             if (this.lstVehiculosDisp.SelectedItem is not null)
             {
-                string dni = this.txtDniCliente.Text;
-                int.TryParse(dni, out int numDni);
+                int.TryParse(this.txtDniCliente.Text, out int numDni);
                 Cliente clienteBuscado = this.BuscarPorDni(numDni, this.formMain.ListaClientes);
-
-                DateTime fechaInicio = this.dtpDesde.Value;
-                DateTime fechaFin = this.dtpHasta.Value;
 
                 Vehiculo vehiculoSelecc = (Vehiculo)this.lstVehiculosDisp.SelectedItem;
                 vehiculoSelecc.Disponible = false;
                 VehiculoDAO.Modificar(vehiculoSelecc, vehiculoSelecc.Patente);
 
-
                 Reserva nuevaReserva = new Reserva(clienteBuscado, clienteBuscado.Dni, vehiculoSelecc, vehiculoSelecc.Patente,
-                    fechaInicio, fechaFin, true);
-                MessageBox.Show("La reserva se realizó con éxito", "Reserva exitosa", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    this.dtpDesde.Value, this.dtpHasta.Value, true);
+
                 ReservaDAO reservaDAO = new ReservaDAO("Reservas");
                 reservaDAO.Guardar(nuevaReserva);
                 this.ListaReservas.Add(nuevaReserva);
+                MessageBox.Show("La reserva se realizó con éxito", "Reserva exitosa", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+
             }
             this.CargarListaReservas();
             this.CargarListaVehiculosDisp();
@@ -133,10 +137,93 @@ namespace Formularios
                 Vehiculo vehiculoAModificar = reservaSeleccionada.Vehiculo;
                 vehiculoAModificar.Disponible = true;
                 VehiculoDAO.Modificar(vehiculoAModificar, reservaSeleccionada.PatenteVehiculo);
+                this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
                 MessageBox.Show("La reserva se canceló con éxito", "Reserva cancelada", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
-            this.CargarListaReservas();
             this.CargarListaVehiculosDisp();
+            this.CargarListaReservas();
+
+        }
+
+        private void btnExportarReservas_Click(object sender, EventArgs e)
+        {
+            ExportarJson(this.ListaReservas.FiltrarReservasVigentes());
+        }
+
+        private void ExportarJson(List<Reserva> listaReservas)
+        {
+            string escritorioPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+            string carpetaDeLaSolucion = Path.Combine(escritorioPath, "ArchivosIntegrador");
+            if (!Directory.Exists(carpetaDeLaSolucion))
+            {
+                Directory.CreateDirectory(carpetaDeLaSolucion);
+            }
+            string archivoJson = "reservasVigentes.json";
+            string rutaCompleta = Path.Combine(carpetaDeLaSolucion, archivoJson);
+
+            JsonSerializerOptions options = new JsonSerializerOptions();
+            options.WriteIndented = true;
+
+            string jsonListaReservas = JsonSerializer.Serialize(listaReservas, options);
+            File.WriteAllText(rutaCompleta, jsonListaReservas);
+        }
+
+        private void btnImportarVehiculos_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Json files(*.json)|*.json";
+            openFileDialog.ShowDialog();
+            ImportarConfig(openFileDialog.FileName, this.formMain.ListaVehiculos);
+            this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+            this.CargarListaVehiculosDisp();
+        }
+
+        private void ImportarConfig(string path, List<Vehiculo> listaVehiculosDisp)
+        {
+            try
+            {
+                // Lee el contenido del archivo JSON utilizando la ruta completa
+                string jsonString = File.ReadAllText(path);
+
+                // Deserializa una lista de objetos de tipo Vehiculo a partir de JSON.
+                List<Vehiculo> listaVehiculos = JsonSerializer.Deserialize<List<Vehiculo>>(jsonString);
+
+                // Itera sobre la lista de vehículos y muestra la información
+                foreach (Vehiculo vehiculo in listaVehiculos)
+                {
+                    if(!this.ValidarPatente(vehiculo, this.formMain.ListaVehiculos))
+                    {
+                        VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
+                        vehiculoDAO.Guardar(vehiculo);
+                    }
+                }
+            }
+
+            catch (JsonException)
+            {
+                MessageBox.Show("El archivo de configuración no se encuentra en el formato correcto.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MostrarMensajeDeError(ex);
+            }
+        }
+
+        private bool ValidarPatente(Vehiculo vehiculo, List<Vehiculo> listaVehiculos)
+        {
+            return listaVehiculos.Any(item => item.Patente == vehiculo.Patente);
+        }
+
+        private void MostrarMensajeDeError(Exception ex)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine(ex.Message);
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine(ex.StackTrace);
+
+            MessageBox.Show(stringBuilder.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

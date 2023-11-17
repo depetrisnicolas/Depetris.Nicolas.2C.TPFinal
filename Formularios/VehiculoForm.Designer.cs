@@ -152,6 +152,7 @@
             Controls.Add(txtModelo);
             Controls.Add(lblMarca);
             Controls.Add(txtMarca);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "VehiculoForm";
             Text = "Alta Vehiculo";
             ResumeLayout(false);

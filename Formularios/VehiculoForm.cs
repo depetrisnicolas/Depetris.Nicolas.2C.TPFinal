@@ -19,6 +19,7 @@ namespace Formularios
         public VehiculoForm()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
@@ -41,7 +42,7 @@ namespace Formularios
                 Vehiculo nuevoVehiculo = new Vehiculo(marca, modelo, numAnio, tipo, patente, true);
                 VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
                 vehiculoDAO.Guardar(nuevoVehiculo);
-                
+
             }
             this.Close();
         }

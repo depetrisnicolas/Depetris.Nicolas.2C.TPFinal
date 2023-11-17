@@ -1,0 +1,41 @@
+[{
+  "Marca": "Fiat",
+  "Modelo": "Palio",
+  "Anio": 2016,
+  "Tipo": "AA260QB",
+  "Patente": "AA260QB",
+  "Disponible": true
+},
+{
+  "Marca": "Chevrolet",
+  "Modelo": "Corsa",
+  "Anio": 2009,
+  "Tipo": "Auto",
+  "Patente": "HHI349",
+  "Disponible": true
+},
+{
+  "Marca": "Volkswagen",
+  "Modelo": "Bora",
+  "Anio": 2012,
+  "Tipo": "Auto",
+  "Patente": "KAV447",
+  "Disponible": true
+},
+{
+  "Marca": "Toyota",
+  "Modelo": "Corolla",
+  "Anio": 2020,
+  "Tipo": "Auto",
+  "Patente": "AB432888",
+  "Disponible": true
+},
+{
+  "Marca": "Ford",
+  "Modelo": "Eco Sport",
+  "Anio": 2020,
+  "Tipo": "Camioneta",
+  "Patente": "AA555GP",
+  "Disponible": true
+}
+]
