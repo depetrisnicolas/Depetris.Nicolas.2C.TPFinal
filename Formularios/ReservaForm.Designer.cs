@@ -60,9 +60,9 @@
             // 
             lstVehiculosDisp.FormattingEnabled = true;
             lstVehiculosDisp.ItemHeight = 15;
-            lstVehiculosDisp.Location = new Point(410, 49);
+            lstVehiculosDisp.Location = new Point(354, 49);
             lstVehiculosDisp.Name = "lstVehiculosDisp";
-            lstVehiculosDisp.Size = new Size(236, 244);
+            lstVehiculosDisp.Size = new Size(292, 244);
             lstVehiculosDisp.TabIndex = 1;
             // 
             // lblVehiculosDisp
@@ -150,7 +150,7 @@
             // 
             btnConfirmarReserva.BackColor = SystemColors.ActiveCaption;
             btnConfirmarReserva.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            btnConfirmarReserva.Location = new Point(99, 312);
+            btnConfirmarReserva.Location = new Point(25, 312);
             btnConfirmarReserva.Name = "btnConfirmarReserva";
             btnConfirmarReserva.Size = new Size(154, 34);
             btnConfirmarReserva.TabIndex = 11;
@@ -162,7 +162,7 @@
             // 
             btnCancelarReserva.BackColor = Color.IndianRed;
             btnCancelarReserva.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            btnCancelarReserva.Location = new Point(440, 312);
+            btnCancelarReserva.Location = new Point(492, 312);
             btnCancelarReserva.Name = "btnCancelarReserva";
             btnCancelarReserva.Size = new Size(154, 34);
             btnCancelarReserva.TabIndex = 12;
@@ -215,7 +215,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 644);
+            ClientSize = new Size(807, 644);
             Controls.Add(btnImportarVehiculos);
             Controls.Add(btnExportar);
             Controls.Add(txtNombreYApellido);

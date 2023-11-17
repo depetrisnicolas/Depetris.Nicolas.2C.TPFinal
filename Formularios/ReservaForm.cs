@@ -25,6 +25,7 @@ namespace Formularios
     {
         private MainForm formMain;
         private List<Reserva> listaReservas;
+        public BuscarPorDniDelegate delegadoBuscarPorDni;
 
 
         public ReservaForm(MainForm mainForm)
@@ -32,17 +33,26 @@ namespace Formularios
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
             this.formMain = mainForm;
+            this.delegadoBuscarPorDni = new BuscarPorDniDelegate(BuscarPorDni);
         }
 
         public List<Reserva> ListaReservas { get => this.listaReservas; set => this.listaReservas = value; }
 
+        private void ReservaForm_Load(object sender, EventArgs e)
+        {
+            this.dtpDesde.MinDate = DateTime.Now;
+            this.dtpHasta.MinDate = DateTime.Now.AddDays(1);
+            this.ListaReservas = ReservaDAO.LeerReservas();
+            this.CargarListaReservas();
+            this.CargarListaVehiculosDisp();
+        }
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             try
             {
                 string dni = this.txtDniCliente.Text;
                 int.TryParse(dni, out int numDni);
-                Cliente clienteBuscado = this.BuscarPorDni(numDni, this.formMain.ListaClientes);
+                Cliente clienteBuscado = this.delegadoBuscarPorDni(numDni, this.formMain.ListaClientes);
                 this.txtNombreYApellido.Text = clienteBuscado.ToString();
             }
             catch (ElementoNoEncontradoException ex)
@@ -75,23 +85,28 @@ namespace Formularios
 
         private void CargarListaVehiculosDisp()
         {
-            this.lstVehiculosDisp.Items.Clear();
-            foreach (Vehiculo vehiculo in this.formMain.ListaVehiculos)
-            {
-                if (vehiculo.Disponible == true)
-                {
-                    this.lstVehiculosDisp.Items.Add(vehiculo);
-                }
-            }
-        }
+            //this.lstVehiculosDisp.Items.Clear();
+            //foreach (Vehiculo vehiculo in this.formMain.ListaVehiculos)
+            //{
+            //    if (vehiculo.Disponible == true)
+            //    {
+            //        this.lstVehiculosDisp.Items.Add(vehiculo);
+            //    }
+            //}
 
-        private void ReservaForm_Load(object sender, EventArgs e)
-        {
-            this.dtpDesde.MinDate = DateTime.Now;
-            this.dtpHasta.MinDate = DateTime.Now.AddDays(1);
-            this.ListaReservas = ReservaDAO.LeerReservas();
-            this.CargarListaReservas();
-            this.CargarListaVehiculosDisp();
+            this.lstVehiculosDisp.Items.Clear();
+
+            // Filtra los vehículos disponibles y ordena por Tipo utilizando LINQ
+            var vehiculosDisponiblesOrdenados = this.formMain.ListaVehiculos
+                .Where(vehiculo => vehiculo.Disponible)
+                .OrderBy(vehiculo => vehiculo.Tipo);
+
+            // Agrega los vehículos ordenados al ListBox
+            foreach (Vehiculo vehiculo in vehiculosDisponiblesOrdenados)
+            {
+                this.lstVehiculosDisp.Items.Add(vehiculo);
+            }
+
         }
 
         private void btnConfirmarReserva_Click(object sender, EventArgs e)
@@ -183,16 +198,14 @@ namespace Formularios
         {
             try
             {
-                // Lee el contenido del archivo JSON utilizando la ruta completa
                 string jsonString = File.ReadAllText(path);
 
                 // Deserializa una lista de objetos de tipo Vehiculo a partir de JSON.
                 List<Vehiculo> listaVehiculos = JsonSerializer.Deserialize<List<Vehiculo>>(jsonString);
 
-                // Itera sobre la lista de vehículos y muestra la información
                 foreach (Vehiculo vehiculo in listaVehiculos)
                 {
-                    if(!this.ValidarPatente(vehiculo, this.formMain.ListaVehiculos))
+                    if (!this.ValidarPatente(vehiculo, this.formMain.ListaVehiculos))
                     {
                         VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
                         vehiculoDAO.Guardar(vehiculo);

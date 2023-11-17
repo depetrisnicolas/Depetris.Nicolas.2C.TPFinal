@@ -17,18 +17,20 @@ namespace Formularios
     public partial class ClienteForm : Form
     {
         private MainForm formMain;
+        private ValidarNombreDelegate delegadoValidarNombre;
 
         public ClienteForm(MainForm mainForm)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
             this.formMain = mainForm;
+            this.delegadoValidarNombre = new ValidarNombreDelegate(nombre => Regex.IsMatch(nombre, "^[a-zA-Z]+$") ? nombre : null);
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            string nombre = ValidarNombre(this.txtNombre.Text);
-            string apellido = ValidarNombre(this.txtApellido.Text);
+            string nombre = this.delegadoValidarNombre(this.txtNombre.Text);
+            string apellido = this.delegadoValidarNombre(this.txtApellido.Text);
             string dni = ValidarDni(this.txtDni.Text);
             string telefono = ValidarTelefono(this.txtTelefono.Text);
 
@@ -48,16 +50,6 @@ namespace Formularios
 
         }
 
-
-
-        private string ValidarNombre(string nombre)
-        {
-            if (!Regex.IsMatch(nombre, "^[a-zA-Z]+$"))
-            {
-                return null;
-            }
-            return nombre;
-        }
 
         private string ValidarDni(string dni)
         {

@@ -48,7 +48,7 @@ namespace Entidades
             return $@"{this.Cliente} | {this.Vehiculo} | {this.FechaInicio.ToString("dd/MM/yyyy")} al {this.FechaFin.ToString("dd/MM/yyyy")} - Costo Total: ${this.CalcularCostoReserva()}";
         }
 
-        private float CalcularCostoReserva()
+        public float CalcularCostoReserva()
         {
             int diasDiferencia = (int)(this.FechaFin.Date - this.FechaInicio.Date).TotalDays;
 

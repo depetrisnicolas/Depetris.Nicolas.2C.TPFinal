@@ -3,6 +3,8 @@ using Entidades.interfaz;
 
 namespace Entidades
 {
+    
+
     public class Cliente 
     {
         private string nombre;
