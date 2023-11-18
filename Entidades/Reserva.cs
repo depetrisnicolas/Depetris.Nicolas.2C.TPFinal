@@ -19,8 +19,7 @@ namespace Entidades
         private static float tarifaAuto;
         private static float tarifaCamioneta;
         private bool vigente;
-
-        
+     
 
         public Reserva(Cliente cliente, int dniCliente, Vehiculo vehiculo, string patenteVehiculo, DateTime fechaInicio, DateTime fechaFin, bool vigente)
         {

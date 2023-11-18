@@ -61,9 +61,9 @@
             // 
             lstVehiculosDisp.FormattingEnabled = true;
             lstVehiculosDisp.ItemHeight = 15;
-            lstVehiculosDisp.Location = new Point(367, 49);
+            lstVehiculosDisp.Location = new Point(336, 49);
             lstVehiculosDisp.Name = "lstVehiculosDisp";
-            lstVehiculosDisp.Size = new Size(279, 244);
+            lstVehiculosDisp.Size = new Size(310, 244);
             lstVehiculosDisp.TabIndex = 1;
             // 
             // lblVehiculosDisp

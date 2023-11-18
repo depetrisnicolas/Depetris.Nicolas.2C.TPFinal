@@ -39,6 +39,7 @@ namespace UnitTests
 
             // Assert
             Assert.AreEqual(105000, costoReserva);
+            Assert.AreEqual(Reserva.TarifaCamioneta * 3, costoReserva);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Entidades
 
         public override string ToString()
         {
-            return $"{this.Tipo} - {this.Marca} {this.Modelo} - {this.Patente}";
+            return $"{this.Tipo} - {this.Marca} {this.Modelo} - {this.Anio} - {this.Patente}";
         }
     }
 }

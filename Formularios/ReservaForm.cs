@@ -18,11 +18,14 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using Microsoft.VisualBasic.ApplicationServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Formularios
 {
     public delegate void DelegateVerificacionPago(string mensaje);
     public delegate void DelegatePagoOk(string mensaje);
+    public delegate void DelegatePagoOff();
+
 
     public partial class ReservaForm : Form
     {
@@ -33,9 +36,12 @@ namespace Formularios
         public BuscarPorDniDelegate delegadoBuscarPorDni;
 
         //EVENTOS
-        public event DelegateVerificacionPago OnVerificacion;
+        public event DelegateVerificacionPago OnVerificacionPago;
         public event DelegatePagoOk OnPagoOk;
+        public event DelegatePagoOff OnPagoOff;
 
+        //CANCELACION HILO SECUNDARIO
+        private CancellationTokenSource cancellation;
 
         public ReservaForm(MainForm mainForm)
         {
@@ -54,8 +60,9 @@ namespace Formularios
             this.ListaReservas = ReservaDAO.LeerReservas();
             this.CargarListaReservas();
             this.CargarListaVehiculosDisp();
-            this.OnVerificacion += this.MostrarVerificacionPago;
+            this.OnVerificacionPago += this.MostrarVerificacionPago;
             this.OnPagoOk += this.MostrarPagoOk;
+            this.OnPagoOff += this.BorrarPago;
         }
         private void btnBuscar_Click(object sender, EventArgs e)
         {
@@ -88,7 +95,6 @@ namespace Formularios
             }
             catch (BaseDeDatosException ex)
             {
-                // Manejar la excepción, por ejemplo, mostrando un mensaje de error.
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null; // Otra opción podría ser lanzar la excepción hacia arriba.
             }
@@ -108,9 +114,11 @@ namespace Formularios
             this.lstVehiculosDisp.Items.Clear();
 
             // Filtra los vehículos disponibles y ordena por Tipo utilizando LINQ
-            var vehiculosDisponiblesOrdenados = this.formMain.ListaVehiculos
+            IOrderedEnumerable<Vehiculo>? vehiculosDisponiblesOrdenados = this.formMain.ListaVehiculos
                 .Where(vehiculo => vehiculo.Disponible)
-                .OrderBy(vehiculo => vehiculo.Tipo);
+                .OrderBy(vehiculo => vehiculo.Tipo)
+                .ThenBy(vehiculo => vehiculo.Anio);
+
 
             // Agrega los vehículos ordenados al ListBox
             foreach (Vehiculo vehiculo in vehiculosDisponiblesOrdenados)
@@ -138,10 +146,7 @@ namespace Formularios
                 reservaDAO.Guardar(nuevaReserva);
                 this.ListaReservas.Add(nuevaReserva);
 
-                this.IniciarPago();
-
-                //MessageBox.Show("La reserva se realizó con éxito", "Reserva exitosa", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-
+                this.ProcesarPago();
             }
             this.CargarListaReservas();
             this.CargarListaVehiculosDisp();
@@ -188,12 +193,10 @@ namespace Formularios
             {
                 Directory.CreateDirectory(carpetaDeLaSolucion);
             }
-            string archivoJson = "reservasVigentes.json";
-            string rutaCompleta = Path.Combine(carpetaDeLaSolucion, archivoJson);
 
+            string rutaCompleta = Path.Combine(carpetaDeLaSolucion, "reservasVigentes.json");
             JsonSerializerOptions options = new JsonSerializerOptions();
             options.WriteIndented = true;
-
             string jsonListaReservas = JsonSerializer.Serialize(listaReservas, options);
             File.WriteAllText(rutaCompleta, jsonListaReservas);
         }
@@ -253,29 +256,27 @@ namespace Formularios
             MessageBox.Show(stringBuilder.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-            
-        private void IniciarPago()
-        {
-            Task.Run(() =>
-            {
-                this.ProcesarPago();
-            });
-            
-        }
         private void ProcesarPago()
         {
-            if (this.OnVerificacion is not null && this.OnPagoOk is not null)
+            this.cancellation = new CancellationTokenSource();
+            Task.Run(() =>
             {
-                this.OnVerificacion.Invoke("Verificando medio de pago...");
-                Thread.Sleep(5000);
-                this.OnPagoOk.Invoke("El pago se realizó con éxito");
-            }
+                do
+                {
+                    if (this.OnVerificacionPago is not null && this.OnPagoOk is not null)
+                    {
+                        this.OnVerificacionPago.Invoke("Verificando medio de pago...");
+                        Thread.Sleep(3500);
+                        this.OnPagoOk.Invoke("El pago se realizó con éxito");
+                        Thread.Sleep(2000);
+                        this.OnPagoOff.Invoke();
+                        this.cancellation.Cancel();
+                    }
+                } while (!this.cancellation.IsCancellationRequested);
+            }, this.cancellation.Token);
         }
-        /// <summary>
-        /// Maneja el evento 'OnVerificacion'
-        /// </summary>
-        /// 
-        /// <param name="mensaje"></param>
+
+
         private void MostrarVerificacionPago(string mensaje)
         {
             if (this.InvokeRequired)
@@ -288,7 +289,6 @@ namespace Formularios
                 this.lblPago.ForeColor = Color.Red;
                 this.lblPago.Text = mensaje;
             }
-
         }
 
         private void MostrarPagoOk(string mensaje)
@@ -301,14 +301,18 @@ namespace Formularios
             {
                 this.lblPago.ForeColor = Color.Green;
                 this.lblPago.Text = mensaje;
+            }
+        }
 
-                Task.Delay(2000).ContinueWith(_ =>
-                {
-                    this.BeginInvoke((MethodInvoker)delegate
-                    {
-                        this.lblPago.Visible = false;
-                    });
-                });
+        private void BorrarPago()
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(() => this.BorrarPago());
+            }
+            else
+            {
+                this.lblPago.Visible = false;
             }
         }
     }
