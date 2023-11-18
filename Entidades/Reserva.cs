@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entidades
 {
+    
     public class Reserva 
     {
         private Cliente cliente;
@@ -18,6 +19,8 @@ namespace Entidades
         private static float tarifaAuto;
         private static float tarifaCamioneta;
         private bool vigente;
+
+        
 
         public Reserva(Cliente cliente, int dniCliente, Vehiculo vehiculo, string patenteVehiculo, DateTime fechaInicio, DateTime fechaFin, bool vigente)
         {
@@ -63,5 +66,7 @@ namespace Entidades
 
             return 0; 
         }
+
+
     }
 }

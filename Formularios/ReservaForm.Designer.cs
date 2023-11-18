@@ -45,6 +45,7 @@
             txtNombreYApellido = new TextBox();
             btnExportar = new Button();
             btnImportarVehiculos = new Button();
+            lblPago = new Label();
             SuspendLayout();
             // 
             // lstReservas
@@ -60,9 +61,9 @@
             // 
             lstVehiculosDisp.FormattingEnabled = true;
             lstVehiculosDisp.ItemHeight = 15;
-            lstVehiculosDisp.Location = new Point(354, 49);
+            lstVehiculosDisp.Location = new Point(367, 49);
             lstVehiculosDisp.Name = "lstVehiculosDisp";
-            lstVehiculosDisp.Size = new Size(292, 244);
+            lstVehiculosDisp.Size = new Size(279, 244);
             lstVehiculosDisp.TabIndex = 1;
             // 
             // lblVehiculosDisp
@@ -191,7 +192,7 @@
             // 
             btnExportar.BackColor = SystemColors.ControlDark;
             btnExportar.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            btnExportar.Location = new Point(652, 488);
+            btnExportar.Location = new Point(668, 491);
             btnExportar.Name = "btnExportar";
             btnExportar.Size = new Size(127, 29);
             btnExportar.TabIndex = 15;
@@ -203,7 +204,7 @@
             // 
             btnImportarVehiculos.BackColor = SystemColors.ControlDark;
             btnImportarVehiculos.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            btnImportarVehiculos.Location = new Point(652, 151);
+            btnImportarVehiculos.Location = new Point(668, 151);
             btnImportarVehiculos.Name = "btnImportarVehiculos";
             btnImportarVehiculos.Size = new Size(127, 29);
             btnImportarVehiculos.TabIndex = 16;
@@ -211,11 +212,24 @@
             btnImportarVehiculos.UseVisualStyleBackColor = false;
             btnImportarVehiculos.Click += btnImportarVehiculos_Click;
             // 
+            // lblPago
+            // 
+            lblPago.AutoSize = true;
+            lblPago.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            lblPago.ForeColor = Color.Black;
+            lblPago.Location = new Point(221, 349);
+            lblPago.Name = "lblPago";
+            lblPago.Size = new Size(57, 21);
+            lblPago.TabIndex = 17;
+            lblPago.Text = "label4";
+            lblPago.Visible = false;
+            // 
             // ReservaForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(807, 644);
+            Controls.Add(lblPago);
             Controls.Add(btnImportarVehiculos);
             Controls.Add(btnExportar);
             Controls.Add(txtNombreYApellido);
@@ -260,5 +274,6 @@
         private TextBox txtNombreYApellido;
         private Button btnExportar;
         private Button btnImportarVehiculos;
+        private Label lblPago;
     }
 }

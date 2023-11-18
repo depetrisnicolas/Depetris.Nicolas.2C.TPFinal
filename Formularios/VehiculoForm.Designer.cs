@@ -115,7 +115,7 @@
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(105, 33);
             btnGuardar.TabIndex = 11;
-            btnGuardar.Text = "GUARDAR";
+            btnGuardar.Text = "Guardar";
             btnGuardar.UseVisualStyleBackColor = true;
             btnGuardar.Click += btnGuardar_Click;
             // 

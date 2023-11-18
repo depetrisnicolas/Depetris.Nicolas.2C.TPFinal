@@ -37,5 +37,13 @@
   "Tipo": "Camioneta",
   "Patente": "AA555GP",
   "Disponible": true
+},
+{
+  "Marca": "Renault",
+  "Modelo": "Kangoo",
+  "Anio": 2020,
+  "Tipo": "Camioneta",
+  "Patente": "AA231SI",
+  "Disponible": true
 }
 ]

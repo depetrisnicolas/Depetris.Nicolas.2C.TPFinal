@@ -21,11 +21,20 @@ using System.Diagnostics;
 
 namespace Formularios
 {
+    public delegate void DelegateVerificacionPago(string mensaje);
+    public delegate void DelegatePagoOk(string mensaje);
+
     public partial class ReservaForm : Form
     {
         private MainForm formMain;
         private List<Reserva> listaReservas;
+
+        //DELEGADO CREADO
         public BuscarPorDniDelegate delegadoBuscarPorDni;
+
+        //EVENTOS
+        public event DelegateVerificacionPago OnVerificacion;
+        public event DelegatePagoOk OnPagoOk;
 
 
         public ReservaForm(MainForm mainForm)
@@ -45,6 +54,8 @@ namespace Formularios
             this.ListaReservas = ReservaDAO.LeerReservas();
             this.CargarListaReservas();
             this.CargarListaVehiculosDisp();
+            this.OnVerificacion += this.MostrarVerificacionPago;
+            this.OnPagoOk += this.MostrarPagoOk;
         }
         private void btnBuscar_Click(object sender, EventArgs e)
         {
@@ -126,7 +137,10 @@ namespace Formularios
                 ReservaDAO reservaDAO = new ReservaDAO("Reservas");
                 reservaDAO.Guardar(nuevaReserva);
                 this.ListaReservas.Add(nuevaReserva);
-                MessageBox.Show("La reserva se realizó con éxito", "Reserva exitosa", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+
+                this.IniciarPago();
+
+                //MessageBox.Show("La reserva se realizó con éxito", "Reserva exitosa", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 
             }
             this.CargarListaReservas();
@@ -237,6 +251,65 @@ namespace Formularios
             stringBuilder.AppendLine(ex.StackTrace);
 
             MessageBox.Show(stringBuilder.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+            
+        private void IniciarPago()
+        {
+            Task.Run(() =>
+            {
+                this.ProcesarPago();
+            });
+            
+        }
+        private void ProcesarPago()
+        {
+            if (this.OnVerificacion is not null && this.OnPagoOk is not null)
+            {
+                this.OnVerificacion.Invoke("Verificando medio de pago...");
+                Thread.Sleep(5000);
+                this.OnPagoOk.Invoke("El pago se realizó con éxito");
+            }
+        }
+        /// <summary>
+        /// Maneja el evento 'OnVerificacion'
+        /// </summary>
+        /// 
+        /// <param name="mensaje"></param>
+        private void MostrarVerificacionPago(string mensaje)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(() => this.MostrarVerificacionPago(mensaje));
+            }
+            else
+            {
+                this.lblPago.Visible = true;
+                this.lblPago.ForeColor = Color.Red;
+                this.lblPago.Text = mensaje;
+            }
+
+        }
+
+        private void MostrarPagoOk(string mensaje)
+        {
+            if (this.InvokeRequired)
+            {
+                this.BeginInvoke(() => this.MostrarPagoOk(mensaje));
+            }
+            else
+            {
+                this.lblPago.ForeColor = Color.Green;
+                this.lblPago.Text = mensaje;
+
+                Task.Delay(2000).ContinueWith(_ =>
+                {
+                    this.BeginInvoke((MethodInvoker)delegate
+                    {
+                        this.lblPago.Visible = false;
+                    });
+                });
+            }
         }
     }
 }
