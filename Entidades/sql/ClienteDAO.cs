@@ -81,7 +81,7 @@ namespace Entidades.sql
             }
             catch (Exception ex)
             {
-                throw new BaseDeDatosException("Error al obtener informacion desde la base de datos", ex);
+                throw new BaseDeDatosException("Error al obtener informacion desde la base de datos CLIENTES", ex);
             }
         }
     }

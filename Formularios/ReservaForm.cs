@@ -55,14 +55,21 @@ namespace Formularios
 
         private void ReservaForm_Load(object sender, EventArgs e)
         {
-            this.dtpDesde.MinDate = DateTime.Now;
-            this.dtpHasta.MinDate = DateTime.Now.AddDays(1);
-            this.ListaReservas = ReservaDAO.LeerReservas();
-            this.CargarListaReservas();
-            this.CargarListaVehiculosDisp();
-            this.OnVerificacionPago += this.MostrarVerificacionPago;
-            this.OnPagoOk += this.MostrarPagoOk;
-            this.OnPagoOff += this.BorrarPago;
+            try
+            {
+                this.dtpDesde.MinDate = DateTime.Now;
+                this.dtpHasta.MinDate = DateTime.Now.AddDays(1);
+                this.ListaReservas = ReservaDAO.LeerReservas();
+                this.CargarListaReservas();
+                this.CargarListaVehiculosDisp();
+                this.OnVerificacionPago += this.MostrarVerificacionPago;
+                this.OnPagoOk += this.MostrarPagoOk;
+                this.OnPagoOff += this.BorrarPago;
+            }
+            catch(BaseDeDatosException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void btnBuscar_Click(object sender, EventArgs e)
         {
@@ -74,6 +81,10 @@ namespace Formularios
                 this.txtNombreYApellido.Text = clienteBuscado.ToString();
             }
             catch (ElementoNoEncontradoException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch(BaseDeDatosException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -111,54 +122,78 @@ namespace Formularios
             //    }
             //}
 
-            this.lstVehiculosDisp.Items.Clear();
-
-            // Filtra los vehículos disponibles y ordena por Tipo utilizando LINQ
-            IOrderedEnumerable<Vehiculo>? vehiculosDisponiblesOrdenados = this.formMain.ListaVehiculos
-                .Where(vehiculo => vehiculo.Disponible)
-                .OrderBy(vehiculo => vehiculo.Tipo)
-                .ThenBy(vehiculo => vehiculo.Anio);
-
-
-            // Agrega los vehículos ordenados al ListBox
-            foreach (Vehiculo vehiculo in vehiculosDisponiblesOrdenados)
+            try
             {
-                this.lstVehiculosDisp.Items.Add(vehiculo);
+                this.lstVehiculosDisp.Items.Clear();
+                this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+
+                // Filtra los vehículos disponibles y ordena por Tipo utilizando LINQ
+                IOrderedEnumerable<Vehiculo>? vehiculosDisponiblesOrdenados = this.formMain.ListaVehiculos
+                    .Where(vehiculo => vehiculo.Disponible)
+                    .OrderBy(vehiculo => vehiculo.Tipo)
+                    .ThenBy(vehiculo => vehiculo.Anio);
+
+
+                // Agrega los vehículos ordenados al ListBox
+                foreach (Vehiculo vehiculo in vehiculosDisponiblesOrdenados)
+                {
+                    this.lstVehiculosDisp.Items.Add(vehiculo);
+                }
+            }
+            catch (BaseDeDatosException ex)
+            {
+                MessageBox.Show(ex.Message, "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
         }
 
         private void btnConfirmarReserva_Click(object sender, EventArgs e)
         {
-            if (this.lstVehiculosDisp.SelectedItem is not null)
+            try
             {
-                int.TryParse(this.txtDniCliente.Text, out int numDni);
-                Cliente clienteBuscado = this.BuscarPorDni(numDni, this.formMain.ListaClientes);
+                if (this.lstVehiculosDisp.SelectedItem is not null)
+                {
+                    int.TryParse(this.txtDniCliente.Text, out int numDni);
+                    Cliente clienteBuscado = this.BuscarPorDni(numDni, this.formMain.ListaClientes);
 
-                Vehiculo vehiculoSelecc = (Vehiculo)this.lstVehiculosDisp.SelectedItem;
-                vehiculoSelecc.Disponible = false;
-                VehiculoDAO.Modificar(vehiculoSelecc, vehiculoSelecc.Patente);
+                    Vehiculo vehiculoSelecc = (Vehiculo)this.lstVehiculosDisp.SelectedItem;
+                    vehiculoSelecc.Disponible = false;
+                    VehiculoDAO.Modificar(vehiculoSelecc, vehiculoSelecc.Patente);
 
-                Reserva nuevaReserva = new Reserva(clienteBuscado, clienteBuscado.Dni, vehiculoSelecc, vehiculoSelecc.Patente,
-                    this.dtpDesde.Value, this.dtpHasta.Value, true);
+                    Reserva nuevaReserva = new Reserva(clienteBuscado, clienteBuscado.Dni, vehiculoSelecc, vehiculoSelecc.Patente,
+                        this.dtpDesde.Value, this.dtpHasta.Value, true);
 
-                ReservaDAO reservaDAO = new ReservaDAO("Reservas");
-                reservaDAO.Guardar(nuevaReserva);
-                this.ListaReservas.Add(nuevaReserva);
+                    ReservaDAO reservaDAO = new ReservaDAO("Reservas");
+                    reservaDAO.Guardar(nuevaReserva);
+                    if (this.ListaReservas is null)
+                    {
+                        this.ListaReservas = new List<Reserva>();
+                    }
+                    this.ListaReservas.Add(nuevaReserva);
 
-                this.ProcesarPago();
+                    this.ProcesarPago();
+                }
+                this.CargarListaReservas();
+                this.CargarListaVehiculosDisp();
             }
-            this.CargarListaReservas();
-            this.CargarListaVehiculosDisp();
+            catch (BaseDeDatosException)
+            {
+                MessageBox.Show("No existe una base de datos RESERVAS", "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
         }
 
         private void CargarListaReservas()
         {
             this.lstReservas.Items.Clear();
-            foreach (Reserva reserva in this.ListaReservas.FiltrarReservasVigentes())
+            if(this.listaReservas is not null)
             {
-                this.lstReservas.Items.Add(reserva);
+                foreach (Reserva reserva in this.ListaReservas.FiltrarReservasVigentes())
+                {
+                    this.lstReservas.Items.Add(reserva);
+                }
             }
+
         }
 
         private void btnCancelarReserva_Click(object sender, EventArgs e)
@@ -181,8 +216,16 @@ namespace Formularios
 
         private void btnExportarReservas_Click(object sender, EventArgs e)
         {
-            ExportarJson(this.ListaReservas.FiltrarReservasVigentes());
-            MessageBox.Show("Las reservas se exportaron correctamente", "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            if (this.ListaReservas is not null)
+            {
+                ExportarJson(this.ListaReservas.FiltrarReservasVigentes());
+                MessageBox.Show("Las reservas se exportaron correctamente", "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            else
+            {
+                MessageBox.Show("No hay reservas para exportar", "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
         }
 
         private void ExportarJson(List<Reserva> listaReservas)
@@ -207,10 +250,16 @@ namespace Formularios
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Json files(*.json)|*.json";
             openFileDialog.ShowDialog();
-            ImportarConfig(openFileDialog.FileName, this.formMain.ListaVehiculos);
-            this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+            try
+            {
+                this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+                this.ImportarConfig(openFileDialog.FileName, this.formMain.ListaVehiculos);
+            }
+            catch (BaseDeDatosException)
+            {
+                this.ImportarConfigSiListaVacia(openFileDialog.FileName);
+            }
             this.CargarListaVehiculosDisp();
-            MessageBox.Show("Vehiculos cargados correctamente", "Importar vehiculos", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void ImportarConfig(string path, List<Vehiculo> listaVehiculosDisp)
@@ -230,6 +279,35 @@ namespace Formularios
                         vehiculoDAO.Guardar(vehiculo);
                     }
                 }
+                MessageBox.Show("Vehiculos cargados correctamente", "Importar vehiculos", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+
+            catch (JsonException)
+            {
+                MessageBox.Show("El archivo de configuración no se encuentra en el formato correcto.", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MostrarMensajeDeError(ex);
+            }
+        }
+
+        private void ImportarConfigSiListaVacia(string path)
+        {
+            try
+            {
+                string jsonString = File.ReadAllText(path);
+
+                // Deserializa una lista de objetos de tipo Vehiculo a partir de JSON.
+                List<Vehiculo> listaVehiculos = JsonSerializer.Deserialize<List<Vehiculo>>(jsonString);
+
+                foreach (Vehiculo vehiculo in listaVehiculos)
+                {
+                    VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
+                    vehiculoDAO.Guardar(vehiculo);
+                }
+                MessageBox.Show("Vehiculos cargados correctamente", "Importar vehiculos", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
 
             catch (JsonException)

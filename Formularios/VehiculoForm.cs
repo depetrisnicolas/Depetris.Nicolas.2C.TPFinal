@@ -78,19 +78,38 @@ namespace Formularios
             }
             else
             {
-                int.TryParse(anio, out int numAnio);
-                Vehiculo nuevoVehiculo = new Vehiculo(marca, modelo, numAnio, tipo, patente, true);
+                try
+                {
+                    int.TryParse(anio, out int numAnio);
+                    Vehiculo nuevoVehiculo = new Vehiculo(marca, modelo, numAnio, tipo, patente, true);
 
-                if (!this.ValidarVehiculoExistente(nuevoVehiculo, this.formMain.ListaVehiculos))
-                {
-                    VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
-                    vehiculoDAO.Guardar(nuevoVehiculo);
-                    MessageBox.Show("El vehiculo se guardó correctamente", "Alta Vehiculo", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    this.Close();
+                    if (this.formMain.ListaVehiculos is null)
+                    {
+                        this.formMain.ListaVehiculos = new List<Vehiculo>();
+                        VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
+                        vehiculoDAO.Guardar(nuevoVehiculo);
+                        this.formMain.ListaVehiculos.Add(nuevoVehiculo);
+                        MessageBox.Show("El vehiculo se guardó correctamente", "Alta Vehiculo", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        this.Close();
+                    }
+
+                    else if (!this.ValidarVehiculoExistente(nuevoVehiculo, this.formMain.ListaVehiculos))
+                    {
+                        this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+                        VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
+                        vehiculoDAO.Guardar(nuevoVehiculo);
+                        this.formMain.ListaVehiculos.Add(nuevoVehiculo);
+                        MessageBox.Show("El vehiculo se guardó correctamente", "Alta Vehiculo", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        this.Close();
+                    }
+                    else
+                    {
+                        throw new VehiculoExistenteException("El vehiculo ya existe en la base de datos");
+                    }
                 }
-                else
+                catch (BaseDeDatosException)
                 {
-                    throw new VehiculoExistenteException("El vehiculo ya existe en la base de datos");
+                    MessageBox.Show("Error al guardar el vehiculo en una base inexistente", "Alta Vehiculo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -117,11 +136,6 @@ namespace Formularios
         private bool ValidarVehiculoExistente(Vehiculo vehiculo, List<Vehiculo> listaVehiculos)
         {
             return listaVehiculos.Any(item => item.Patente == vehiculo.Patente);
-        }
-
-        private void VehiculoForm_Load(object sender, EventArgs e)
-        {
-            this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
         }
     }
 }

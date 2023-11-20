@@ -83,7 +83,7 @@ namespace Entidades.sql
             }
             catch (Exception ex)
             {
-                throw new BaseDeDatosException("Error al obtener un elemento por DNI", ex);
+                throw new BaseDeDatosException("Error al obtener informacion desde la base de datos VEHICULOS", ex);
             }
         }
 

@@ -214,7 +214,6 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "VehiculoForm";
             Text = "Alta Vehiculo";
-            Load += VehiculoForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }

@@ -12,6 +12,7 @@ using Entidades;
 using Entidades.sql;
 using System.Data.SqlClient;
 using Entidades.excepciones;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Formularios
 {
@@ -73,21 +74,39 @@ namespace Formularios
             }
             else
             {
-                int.TryParse(dni, out int numDni);
-                Cliente nuevoCliente = new Cliente(nombre, apellido, numDni, telefono);
+                try
+                {
+                    int.TryParse(dni, out int numDni);
+                    Cliente nuevoCliente = new Cliente(nombre, apellido, numDni, telefono);
 
-                if (!this.ValidarClienteExistente(nuevoCliente, this.formMain.ListaClientes))
-                {
-                    ClienteDAO clientesDAO = new ClienteDAO("Clientes");
-                    clientesDAO.Guardar(nuevoCliente);
-                    this.formMain.ListaClientes.Add(nuevoCliente);
-                    MessageBox.Show("El cliente se guardó correctamente", "Alta Cliente", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    this.Close();
+                    if (this.formMain.ListaClientes is null)
+                    {
+                        this.formMain.ListaClientes = new List<Cliente>();
+                        ClienteDAO clientesDAO = new ClienteDAO("Clientes");
+                        clientesDAO.Guardar(nuevoCliente);
+                        this.formMain.ListaClientes.Add(nuevoCliente);
+                        MessageBox.Show("El cliente se guardó correctamente", "Alta Cliente", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        this.Close();
+                    }
+                    else if (!this.ValidarClienteExistente(nuevoCliente, this.formMain.ListaClientes))
+                    {
+                        this.formMain.ListaClientes = ClienteDAO.LeerClientes();
+                        ClienteDAO clientesDAO = new ClienteDAO("Clientes");
+                        clientesDAO.Guardar(nuevoCliente);
+                        this.formMain.ListaClientes.Add(nuevoCliente);
+                        MessageBox.Show("El cliente se guardó correctamente", "Alta Cliente", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        this.Close();
+                    }
+                    else
+                    {
+                        throw new ClienteExistenteException("El cliente ya existe en la base de datos");
+                    }
                 }
-                else
+                catch(BaseDeDatosException)
                 {
-                    throw new ClienteExistenteException("El cliente ya existe en la base de datos");
+                    MessageBox.Show("Error al guardar el cliente en una base inexistente", "Alta Cliente", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+
             }
         }
 

@@ -42,11 +42,10 @@ namespace Formularios
         {
             try
             {
-                this.ListaVehiculos = VehiculoDAO.LeerVehiculos();
                 this.formReserva = new ReservaForm(this);
                 this.formReserva.ShowDialog();
             }
-            catch (ClienteExistenteException ex)
+            catch (BaseDeDatosException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -54,8 +53,20 @@ namespace Formularios
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            this.ListaClientes = ClienteDAO.LeerClientes();
+            
             this.pictureCar.Load(this.imagen);
+            
+
+            try
+            {
+                this.ListaClientes = ClienteDAO.LeerClientes();
+                this.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+
+            }
+            catch (BaseDeDatosException)
+            {
+                MessageBox.Show("Error de conexion con la base de datos", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
