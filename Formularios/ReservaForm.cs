@@ -48,7 +48,7 @@ namespace Formularios
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
             this.formMain = mainForm;
-            this.delegadoBuscarPorDni = new BuscarPorDniDelegate(BuscarPorDni);
+            this.delegadoBuscarPorDni = new BuscarPorDniDelegate(this.BuscarPorDni);
         }
 
         public List<Reserva> ListaReservas { get => this.listaReservas; set => this.listaReservas = value; }
@@ -93,7 +93,7 @@ namespace Formularios
                 }
                 throw new ElementoNoEncontradoException("No se encontró ningún cliente con ese DNI.");
             }
-            catch (BaseDeDatosException ex)
+            catch (ClienteExistenteException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null; // Otra opción podría ser lanzar la excepción hacia arriba.
@@ -182,6 +182,7 @@ namespace Formularios
         private void btnExportarReservas_Click(object sender, EventArgs e)
         {
             ExportarJson(this.ListaReservas.FiltrarReservasVigentes());
+            MessageBox.Show("Las reservas se exportaron correctamente", "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void ExportarJson(List<Reserva> listaReservas)
@@ -209,6 +210,7 @@ namespace Formularios
             ImportarConfig(openFileDialog.FileName, this.formMain.ListaVehiculos);
             this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
             this.CargarListaVehiculosDisp();
+            MessageBox.Show("Vehiculos cargados correctamente", "Importar vehiculos", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void ImportarConfig(string path, List<Vehiculo> listaVehiculosDisp)
@@ -222,7 +224,7 @@ namespace Formularios
 
                 foreach (Vehiculo vehiculo in listaVehiculos)
                 {
-                    if (!this.ValidarPatente(vehiculo, this.formMain.ListaVehiculos))
+                    if (!this.ValidarVehiculoExistente(vehiculo, this.formMain.ListaVehiculos))
                     {
                         VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
                         vehiculoDAO.Guardar(vehiculo);
@@ -241,7 +243,7 @@ namespace Formularios
             }
         }
 
-        private bool ValidarPatente(Vehiculo vehiculo, List<Vehiculo> listaVehiculos)
+        private bool ValidarVehiculoExistente(Vehiculo vehiculo, List<Vehiculo> listaVehiculos)
         {
             return listaVehiculos.Any(item => item.Patente == vehiculo.Patente);
         }

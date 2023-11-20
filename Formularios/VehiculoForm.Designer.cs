@@ -39,11 +39,16 @@
             btnGuardar = new Button();
             txtPatente = new TextBox();
             lblPatente = new Label();
+            lblErrorMarca = new Label();
+            lblErrorModelo = new Label();
+            lblErrorAnio = new Label();
+            lblErrorPatente = new Label();
+            lblErrorTipo = new Label();
             SuspendLayout();
             // 
             // txtMarca
             // 
-            txtMarca.Location = new Point(62, 64);
+            txtMarca.Location = new Point(75, 53);
             txtMarca.Name = "txtMarca";
             txtMarca.Size = new Size(136, 23);
             txtMarca.TabIndex = 1;
@@ -51,7 +56,7 @@
             // lblMarca
             // 
             lblMarca.AutoSize = true;
-            lblMarca.Location = new Point(62, 46);
+            lblMarca.Location = new Point(75, 35);
             lblMarca.Name = "lblMarca";
             lblMarca.Size = new Size(43, 15);
             lblMarca.TabIndex = 4;
@@ -59,7 +64,7 @@
             // 
             // txtModelo
             // 
-            txtModelo.Location = new Point(62, 123);
+            txtModelo.Location = new Point(75, 126);
             txtModelo.Name = "txtModelo";
             txtModelo.Size = new Size(136, 23);
             txtModelo.TabIndex = 5;
@@ -67,7 +72,7 @@
             // lblModelo
             // 
             lblModelo.AutoSize = true;
-            lblModelo.Location = new Point(62, 105);
+            lblModelo.Location = new Point(75, 108);
             lblModelo.Name = "lblModelo";
             lblModelo.Size = new Size(51, 15);
             lblModelo.TabIndex = 6;
@@ -75,7 +80,7 @@
             // 
             // txtAnio
             // 
-            txtAnio.Location = new Point(62, 184);
+            txtAnio.Location = new Point(75, 196);
             txtAnio.Name = "txtAnio";
             txtAnio.Size = new Size(62, 23);
             txtAnio.TabIndex = 7;
@@ -83,7 +88,7 @@
             // lblAño
             // 
             lblAño.AutoSize = true;
-            lblAño.Location = new Point(62, 166);
+            lblAño.Location = new Point(75, 178);
             lblAño.Name = "lblAño";
             lblAño.Size = new Size(32, 15);
             lblAño.TabIndex = 8;
@@ -94,7 +99,7 @@
             cmbTipo.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTipo.FormattingEnabled = true;
             cmbTipo.Items.AddRange(new object[] { "Auto", "Camioneta" });
-            cmbTipo.Location = new Point(62, 242);
+            cmbTipo.Location = new Point(75, 279);
             cmbTipo.Name = "cmbTipo";
             cmbTipo.Size = new Size(136, 23);
             cmbTipo.TabIndex = 9;
@@ -102,7 +107,7 @@
             // lblTipo
             // 
             lblTipo.AutoSize = true;
-            lblTipo.Location = new Point(62, 224);
+            lblTipo.Location = new Point(75, 261);
             lblTipo.Name = "lblTipo";
             lblTipo.Size = new Size(33, 15);
             lblTipo.TabIndex = 10;
@@ -111,7 +116,7 @@
             // btnGuardar
             // 
             btnGuardar.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnGuardar.Location = new Point(75, 369);
+            btnGuardar.Location = new Point(91, 409);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(105, 33);
             btnGuardar.TabIndex = 11;
@@ -121,26 +126,80 @@
             // 
             // txtPatente
             // 
-            txtPatente.Location = new Point(62, 302);
+            txtPatente.Location = new Point(75, 349);
             txtPatente.Name = "txtPatente";
             txtPatente.Size = new Size(136, 23);
             txtPatente.TabIndex = 12;
-            txtPatente.TextChanged += txtPatente_TextChanged;
             // 
             // lblPatente
             // 
             lblPatente.AutoSize = true;
-            lblPatente.Location = new Point(62, 284);
+            lblPatente.Location = new Point(75, 331);
             lblPatente.Name = "lblPatente";
             lblPatente.Size = new Size(47, 15);
             lblPatente.TabIndex = 13;
             lblPatente.Text = "Patente";
             // 
+            // lblErrorMarca
+            // 
+            lblErrorMarca.AutoSize = true;
+            lblErrorMarca.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblErrorMarca.ForeColor = Color.Red;
+            lblErrorMarca.Location = new Point(75, 79);
+            lblErrorMarca.Name = "lblErrorMarca";
+            lblErrorMarca.Size = new Size(0, 13);
+            lblErrorMarca.TabIndex = 14;
+            // 
+            // lblErrorModelo
+            // 
+            lblErrorModelo.AutoSize = true;
+            lblErrorModelo.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblErrorModelo.ForeColor = Color.Red;
+            lblErrorModelo.Location = new Point(75, 152);
+            lblErrorModelo.Name = "lblErrorModelo";
+            lblErrorModelo.Size = new Size(0, 13);
+            lblErrorModelo.TabIndex = 15;
+            // 
+            // lblErrorAnio
+            // 
+            lblErrorAnio.AutoSize = true;
+            lblErrorAnio.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblErrorAnio.ForeColor = Color.Red;
+            lblErrorAnio.Location = new Point(74, 222);
+            lblErrorAnio.Name = "lblErrorAnio";
+            lblErrorAnio.Size = new Size(0, 13);
+            lblErrorAnio.TabIndex = 16;
+            // 
+            // lblErrorPatente
+            // 
+            lblErrorPatente.AutoSize = true;
+            lblErrorPatente.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblErrorPatente.ForeColor = Color.Red;
+            lblErrorPatente.Location = new Point(75, 375);
+            lblErrorPatente.Name = "lblErrorPatente";
+            lblErrorPatente.Size = new Size(0, 13);
+            lblErrorPatente.TabIndex = 17;
+            // 
+            // lblErrorTipo
+            // 
+            lblErrorTipo.AutoSize = true;
+            lblErrorTipo.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            lblErrorTipo.ForeColor = Color.Red;
+            lblErrorTipo.Location = new Point(75, 305);
+            lblErrorTipo.Name = "lblErrorTipo";
+            lblErrorTipo.Size = new Size(0, 13);
+            lblErrorTipo.TabIndex = 18;
+            // 
             // VehiculoForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(260, 442);
+            ClientSize = new Size(292, 454);
+            Controls.Add(lblErrorTipo);
+            Controls.Add(lblErrorPatente);
+            Controls.Add(lblErrorAnio);
+            Controls.Add(lblErrorModelo);
+            Controls.Add(lblErrorMarca);
             Controls.Add(lblPatente);
             Controls.Add(txtPatente);
             Controls.Add(btnGuardar);
@@ -155,6 +214,7 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "VehiculoForm";
             Text = "Alta Vehiculo";
+            Load += VehiculoForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -172,5 +232,10 @@
         private Button btnGuardar;
         private TextBox txtPatente;
         private Label lblPatente;
+        private Label lblErrorMarca;
+        private Label lblErrorModelo;
+        private Label lblErrorAnio;
+        private Label lblErrorPatente;
+        private Label lblErrorTipo;
     }
 }

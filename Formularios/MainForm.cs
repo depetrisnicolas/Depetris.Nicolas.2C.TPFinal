@@ -34,7 +34,7 @@ namespace Formularios
 
         private void btnAgregarVehiculo_Click(object sender, EventArgs e)
         {
-            this.formVehiculo = new VehiculoForm();
+            this.formVehiculo = new VehiculoForm(this);
             this.formVehiculo.ShowDialog();
         }
 
@@ -46,7 +46,7 @@ namespace Formularios
                 this.formReserva = new ReservaForm(this);
                 this.formReserva.ShowDialog();
             }
-            catch (BaseDeDatosException ex)
+            catch (ClienteExistenteException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

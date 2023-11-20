@@ -39,7 +39,7 @@
             // btnAgregarCliente
             // 
             btnAgregarCliente.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnAgregarCliente.Location = new Point(12, 448);
+            btnAgregarCliente.Location = new Point(37, 448);
             btnAgregarCliente.Name = "btnAgregarCliente";
             btnAgregarCliente.Size = new Size(139, 36);
             btnAgregarCliente.TabIndex = 0;
@@ -50,7 +50,7 @@
             // btnAgregarVehiculo
             // 
             btnAgregarVehiculo.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnAgregarVehiculo.Location = new Point(501, 448);
+            btnAgregarVehiculo.Location = new Point(477, 448);
             btnAgregarVehiculo.Name = "btnAgregarVehiculo";
             btnAgregarVehiculo.Size = new Size(132, 36);
             btnAgregarVehiculo.TabIndex = 1;
@@ -61,7 +61,7 @@
             // btnReserva
             // 
             btnReserva.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            btnReserva.Location = new Point(247, 498);
+            btnReserva.Location = new Point(251, 509);
             btnReserva.Name = "btnReserva";
             btnReserva.Size = new Size(145, 65);
             btnReserva.TabIndex = 2;
