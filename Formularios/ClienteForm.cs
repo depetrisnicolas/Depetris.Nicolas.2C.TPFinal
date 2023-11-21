@@ -18,18 +18,23 @@ namespace Formularios
 {
     public partial class ClienteForm : Form
     {
-        private MainForm formMain;
+        //ATRIBUTOS
+        private MainForm formularioMain;
         private ValidarCaractAlfabeticosDelegate delegadoValidarSoloLetras;
 
+        //CONSTRUCTOR
         public ClienteForm(MainForm mainForm)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.formMain = mainForm;
+            this.formularioMain = mainForm;
             this.delegadoValidarSoloLetras = new ValidarCaractAlfabeticosDelegate(cadena => 
                 Regex.IsMatch(cadena, "^[a-zA-Z]+$") ? cadena : null);
         }
 
+        /// <summary>
+        /// Realiza la validación de los datos ingresados y guarda un nuevo cliente en la base de datos.
+        /// </summary>
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             string nombre = this.delegadoValidarSoloLetras(this.txtNombre.Text);
@@ -37,10 +42,7 @@ namespace Formularios
             string dni = this.ValidarDni(this.txtDni.Text);
             string telefono = this.ValidarTelefono(this.txtTelefono.Text);
 
-            this.lblErrorNombre.Text = "";
-            this.lblErrorApellido.Text = "";
-            this.lblErrorDni.Text = "";
-            this.lblErrorCel.Text = "";
+            this.LimpiarErrores();
 
             try
             {
@@ -49,11 +51,17 @@ namespace Formularios
             catch (ClienteExistenteException ex) 
             {
                 MessageBox.Show(ex.Message, "Alta Cliente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            
-
+            }           
         }
 
+        /// <summary>
+        /// Valida los datos del cliente y guarda la información en la base de datos.
+        /// </summary>
+        /// <param name="nombre">Nombre del cliente.</param>
+        /// <param name="apellido">Apellido del cliente.</param>
+        /// <param name="dni">DNI del cliente.</param>
+        /// <param name="telefono">Número de teléfono del cliente.</param>
+        /// <exception cref="ClienteExistenteException">Se lanza si el cliente cargado ya existe en la base de datos.</exception>
         private void ValidarDatosCliente(string nombre, string apellido, string dni, string telefono)
         {
             if (string.IsNullOrEmpty(nombre))
@@ -79,21 +87,23 @@ namespace Formularios
                     int.TryParse(dni, out int numDni);
                     Cliente nuevoCliente = new Cliente(nombre, apellido, numDni, telefono);
 
-                    if (this.formMain.ListaClientes is null)
+                    //Si todavía no hay clientes guardados en la base de datos
+                    if (this.formularioMain.ListaClientes is null)
                     {
-                        this.formMain.ListaClientes = new List<Cliente>();
+                        this.formularioMain.ListaClientes = new List<Cliente>();
                         ClienteDAO clientesDAO = new ClienteDAO("Clientes");
                         clientesDAO.Guardar(nuevoCliente);
-                        this.formMain.ListaClientes.Add(nuevoCliente);
+                        this.formularioMain.ListaClientes.Add(nuevoCliente);
                         MessageBox.Show("El cliente se guardó correctamente", "Alta Cliente", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         this.Close();
                     }
-                    else if (!this.ValidarClienteExistente(nuevoCliente, this.formMain.ListaClientes))
+                    //Si la lista de clientes ya fue creada verifica que el cliente no exista
+                    else if (!this.ValidarClienteExistente(nuevoCliente, this.formularioMain.ListaClientes))
                     {
-                        this.formMain.ListaClientes = ClienteDAO.LeerClientes();
+                        this.formularioMain.ListaClientes = ClienteDAO.LeerClientes();
                         ClienteDAO clientesDAO = new ClienteDAO("Clientes");
                         clientesDAO.Guardar(nuevoCliente);
-                        this.formMain.ListaClientes.Add(nuevoCliente);
+                        this.formularioMain.ListaClientes.Add(nuevoCliente);
                         MessageBox.Show("El cliente se guardó correctamente", "Alta Cliente", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         this.Close();
                     }
@@ -110,6 +120,11 @@ namespace Formularios
             }
         }
 
+        /// <summary>
+        /// Valida el formato del Dni.
+        /// </summary>
+        /// <param name="dni">Número de DNI a validar.</param>
+        /// <returns>El número de DNI validado o null si el formato es inválido.</returns>
         private string ValidarDni(string dni)
         {
             if (!Regex.IsMatch(dni, @"^\d{8}$"))
@@ -119,6 +134,11 @@ namespace Formularios
             return dni;
         }
 
+        /// <summary>
+        /// Valida el formato de un número de teléfono.
+        /// </summary>
+        /// <param name="telefono">Número de teléfono a validar.</param>
+        /// <returns>El número de teléfono validado o null si el formato es inválido.</returns>
         private string ValidarTelefono(string telefono)
         {
             if (!Regex.IsMatch(telefono, @"^\d{8}$"))
@@ -128,9 +148,28 @@ namespace Formularios
             return telefono;
         }
 
+        /// <summary>
+        /// Valida si un cliente ya existe en una lista de clientes mediante su número de dni.
+        /// </summary>
+        /// <param name="cliente">Cliente a verificar.</param>
+        /// <param name="listaClientes">Lista de clientes en la que se realiza la búsqueda.</param>
+        /// <returns>
+        /// <c>true</c> si el cliente ya existe en la lista, <c>false</c> si no existe.
+        /// </returns>
         private bool ValidarClienteExistente(Cliente cliente, List<Cliente> listaClientes)
         {
             return listaClientes.Any(item => item.Dni == cliente.Dni);
+        }
+
+        /// <summary>
+        /// Limpia los mensajes de error en el formulario de clientes.
+        /// </summary>
+        private void LimpiarErrores()
+        {
+            this.lblErrorNombre.Text = "";
+            this.lblErrorApellido.Text = "";
+            this.lblErrorDni.Text = "";
+            this.lblErrorCel.Text = "";
         }
     }
 }

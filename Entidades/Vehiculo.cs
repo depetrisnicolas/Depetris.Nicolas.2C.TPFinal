@@ -9,6 +9,7 @@ namespace Entidades
 {
     public class Vehiculo 
     {
+        //ATRIBUTOS
         private string marca;
         private string modelo;
         private int anio;
@@ -16,6 +17,7 @@ namespace Entidades
         private string patente;
         private bool disponible;
 
+        //CONSTRUCTOR
         public Vehiculo(string marca, string modelo, int anio, string tipo, string patente, bool disponible)
         {
             this.marca = marca;
@@ -26,6 +28,7 @@ namespace Entidades
             this.disponible = disponible;
         }
 
+        //PROPIEDADES
         public string Marca { get => this.marca; set => this.marca = value; }
         public string Modelo { get => this.modelo; set => this.modelo = value; }
         public int Anio { get => this.anio; set => this.anio = value; }
@@ -33,7 +36,7 @@ namespace Entidades
         public string Patente { get => this.patente; set => this.patente = value; }
         public bool Disponible { get => this.disponible; set => this.disponible = value; }
 
-
+        //SOBRECARGA PARA MOSTRAR LOS DATOS DEL VEHICULO
         public override string ToString()
         {
             return $"{this.Tipo} - {this.Marca} {this.Modelo} - {this.Anio} - {this.Patente}";

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entidades.excepciones
 {
+    /// <summary>
+    /// Excepción lanzada cuando un cliente ya existe en la base de datos.
+    /// </summary>
     public class ClienteExistenteException : Exception
     {
         public ClienteExistenteException(string? message) : base(message)

@@ -27,6 +27,11 @@ namespace Entidades.sql
 
         public static string StringConnection { get => ReservaDAO.stringConnection; set => ReservaDAO.stringConnection = value; }
 
+        /// <summary>
+        /// Guarda una nueva reserva en la base de datos.
+        /// </summary>
+        /// <param name="reserva">Instancia de la clase Reserva que se va a almacenar.</param>
+        /// <exception cref="BaseDeDatosException">Se lanza si ocurre un error al interactuar con la base de datos.</exception>
         public void Guardar(Reserva reserva)
         {
             try
@@ -58,6 +63,12 @@ namespace Entidades.sql
 
         }
 
+        /// <summary>
+        /// Lee la lista completa de reservas desde la base de datos.
+        /// </summary>
+        /// <returns>Lista de reservas almacenadas en la base de datos.</returns>
+        /// <exception cref="BaseDeDatosException">Se lanza si ocurre un error al interactuar con la base de datos.</exception>
+        /// <exception cref="ElementoNoEncontradoException">Se lanza si no hay reservas cargadas.</exception>
         public static List<Reserva> LeerReservas()
         {
             try
@@ -97,6 +108,12 @@ namespace Entidades.sql
             }
         }
 
+        /// <summary>
+        /// Modifica el estado de vigencia de una reserva en la base de datos.
+        /// </summary>
+        /// <param name="reservaEditada">Instancia de la clase Reserva con la nueva información.</param>
+        /// <param name="clienteDni">DNI del cliente asociado a la reserva.</param>
+        /// <exception cref="BaseDeDatosException">Se lanza si ocurre un error al interactuar con la base de datos.</exception>
         public static void Modificar(Reserva reservaEditada, int clienteDni)
         {
             try

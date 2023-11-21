@@ -26,7 +26,11 @@ namespace Entidades.sql
 
         public static string StringConnection { get => VehiculoDAO.stringConnection; set => VehiculoDAO.stringConnection = value; }
 
-
+        /// <summary>
+        /// Guarda un nuevo vehículo en la base de datos.
+        /// </summary>
+        /// <param name="vehiculo">Vehículo a guardar.</param>
+        /// <exception cref="BaseDeDatosException">Se lanza cuando ocurre un error al interactuar con la base de datos.</exception>
         public void Guardar(Vehiculo vehiculo)
         {
             try
@@ -53,6 +57,12 @@ namespace Entidades.sql
             }
         }
 
+        /// <summary>
+        /// Lee la lista de vehículos almacenados en la base de datos.
+        /// </summary>
+        /// <returns>Lista de vehículos almacenados.</returns>
+        /// <exception cref="ElementoNoEncontradoException">Se lanza cuando la tabla de vehículos está vacía.</exception>
+        /// <exception cref="BaseDeDatosException">Se lanza cuando ocurre un error al interactuar con la base de datos.</exception>
         public static List<Vehiculo> LeerVehiculos()
         {
             try
@@ -87,27 +97,12 @@ namespace Entidades.sql
             }
         }
 
-        //public static Vehiculo LeerVehiculoPorPatente(string patente, List<Vehiculo> listaVehiculos)
-        //{
-        //    try
-        //    { 
-        //        foreach (Vehiculo vehiculo in listaVehiculos)
-        //        {
-        //            if (vehiculo.Patente == patente)
-        //            {
-        //                return vehiculo;
-        //            }
-        //        }
-
-        //        throw new ElementoNoEncontradoException("Ningún cliente encontrado para esa patente");
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        throw new ElementoNoEncontradoException("Error al buscar vehiculo", ex);
-        //    }
-        //}
-
+        /// <summary>
+        /// Modifica el estado de disponibilidad de un vehículo en la base de datos.
+        /// </summary>
+        /// <param name="vehiculoEditado">Vehículo con los cambios a aplicar.</param>
+        /// <param name="patente">Patente única que identifica al vehículo a modificar.</param>
+        /// <exception cref="BaseDeDatosException">Se lanza cuando ocurre un error al interactuar con la base de datos.</exception>
         public static void Modificar(Vehiculo vehiculoEditado, string patente)
         {
             try

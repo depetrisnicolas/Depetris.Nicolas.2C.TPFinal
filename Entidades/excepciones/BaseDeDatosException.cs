@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entidades.excepciones
 {
+    /// <summary>
+    /// Excepción lanzada cuando ocurre un error relacionado con la base de datos.
+    /// </summary>
     public class BaseDeDatosException : Exception
     {
         public BaseDeDatosException(string? message) : base(message)

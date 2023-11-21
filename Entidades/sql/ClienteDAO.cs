@@ -27,6 +27,11 @@ namespace Entidades.sql
 
         public static string StringConnection { get => ClienteDAO.stringConnection; set => ClienteDAO.stringConnection = value; }
 
+        /// <summary>
+        /// Guarda un nuevo cliente en la base de datos.
+        /// </summary>
+        /// <param name="cliente">Instancia del cliente a guardar.</param>
+        /// <exception cref="BaseDeDatosException">Se lanza si ocurre un error al interactuar con la base de datos.</exception>
         public void Guardar(Cliente cliente)
         {
             try
@@ -52,6 +57,12 @@ namespace Entidades.sql
             }
         }
 
+        /// <summary>
+        /// Lee la lista completa de clientes desde la base de datos.
+        /// </summary>
+        /// <returns>Lista de clientes almacenados en la base de datos.</returns>
+        /// <exception cref="BaseDeDatosException">Se lanza si ocurre un error al interactuar con la base de datos.</exception>
+        /// <exception cref="ElementoNoEncontradoException">Se lanza si la tabla de clientes está vacía.</exception>
         public static List<Cliente> LeerClientes()
         {
             try

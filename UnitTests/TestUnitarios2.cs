@@ -7,6 +7,9 @@ namespace UnitTests
     public class TestUnitarios2
     {
         [TestMethod]
+        /// <summary>
+        /// Verifica que al invocar el método FiltrarReservasVigentes, devuelva solo aquellas reservas que están activas.
+        /// </summary>
         public void Al_InvocarAlMetodoFiltrarReservasVigentes_DeberiaDevolverSoloAquellasQueEstanActivas()
         {
             // Arrange
@@ -40,6 +43,9 @@ namespace UnitTests
         }
 
         [TestMethod]
+        /// <summary>
+        /// Verifica que al invocar el método FiltrarReservasVigentes con una lista vacía, devuelva cero reservas vigentes.
+        /// </summary>
         public void Al_InvocarAlMetodoFiltrarReservasVigentes_SiLaListaEstaVacia_DeberiaDevolverCeroReservasVigentes()
         {
             // Arrange
