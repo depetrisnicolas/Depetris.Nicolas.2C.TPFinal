@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Nv9Tpyce9BuyGbVuHF/cVCeQllYTQ2bFICiQU+/kVWrkyLTSQTWY3oC/yRcm3lexgYZTUSgF5erNkWCI+r6F7g==",
+  "dgSpecHash": "ubnqA1tbkgMDZyPRzRaKST+3LJfFT/oPK8AnJJCmIVP7Pc30kwIquyV1GJ4hcKMxkG7Ag/ssUJ1dieiwN9dVtg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\nico_\\Desktop\\Programación y Laboratorio II\\Ejercicio_Integrador2\\Depetris.Nicolas.2C.TPFinal\\Pruebas\\Pruebas.csproj",
+  "projectFilePath": "C:\\Users\\nico_\\Desktop\\Programación y Laboratorio II\\Ejercicio_Integrador2\\Depetris.Nicolas.2C.TPFinal\\Pruebas\\Vista.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\nico_\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",
     "C:\\Users\\nico_\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",

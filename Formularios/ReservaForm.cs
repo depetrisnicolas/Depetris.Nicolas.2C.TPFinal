@@ -22,6 +22,7 @@ using System.Threading;
 
 namespace Formularios
 {
+    //DELEGADOS
     public delegate void DelegateVerificacionPago(string mensaje);
     public delegate void DelegatePagoOk(string mensaje);
     public delegate void DelegatePagoOff();
@@ -29,30 +30,33 @@ namespace Formularios
 
     public partial class ReservaForm : Form
     {
-        private MainForm formMain;
+        //ATRIBUTOS
+        private MainForm formularioMain;
         private List<Reserva> listaReservas;
-
-        //DELEGADO CREADO
         public BuscarPorDniDelegate delegadoBuscarPorDni;
+        //CANCELACION HILO SECUNDARIO
+        private CancellationTokenSource cancellation;
 
         //EVENTOS
         public event DelegateVerificacionPago OnVerificacionPago;
         public event DelegatePagoOk OnPagoOk;
         public event DelegatePagoOff OnPagoOff;
 
-        //CANCELACION HILO SECUNDARIO
-        private CancellationTokenSource cancellation;
-
+        //CONSTRUCTOR
         public ReservaForm(MainForm mainForm)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.formMain = mainForm;
+            this.formularioMain = mainForm;
             this.delegadoBuscarPorDni = new BuscarPorDniDelegate(this.BuscarPorDni);
         }
 
+        //PROPIEDAD
         public List<Reserva> ListaReservas { get => this.listaReservas; set => this.listaReservas = value; }
 
+        /// <summary>
+        /// Evento que se dispara cuando el formulario de reserva se carga.
+        /// </summary>
         private void ReservaForm_Load(object sender, EventArgs e)
         {
             try
@@ -71,13 +75,17 @@ namespace Formularios
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        /// <summary>
+        /// Maneja el evento de clic en el botón de búsqueda de clientes por DNI.
+        /// </summary>
         private void btnBuscar_Click(object sender, EventArgs e)
         {
             try
             {
                 string dni = this.txtDniCliente.Text;
                 int.TryParse(dni, out int numDni);
-                Cliente clienteBuscado = this.delegadoBuscarPorDni(numDni, this.formMain.ListaClientes);
+                Cliente clienteBuscado = this.delegadoBuscarPorDni(numDni, this.formularioMain.ListaClientes);
                 this.txtNombreYApellido.Text = clienteBuscado.ToString();
             }
             catch (ElementoNoEncontradoException ex)
@@ -88,47 +96,39 @@ namespace Formularios
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
+        /// <summary>
+        /// Busca un cliente por su número de DNI en la lista de clientes.
+        /// </summary>
+        /// <param name="numDni">Número de DNI del cliente a buscar.</param>
+        /// <param name="listaClientes">Lista de clientes en la que se realizará la búsqueda.</param>
+        /// <returns>El objeto Cliente si se encuentra.</returns>
+        /// <exception cref="ElementoNoEncontradoException">Se lanza si no se encuentra ningún cliente con el DNI proporcionado.</exception>
         private Cliente BuscarPorDni(int numDni, List<Cliente> listaClientes)
         {
-            try
+            foreach (Cliente cliente in listaClientes)
             {
-                foreach (Cliente cliente in listaClientes)
+                if (cliente.Dni == numDni)
                 {
-                    if (cliente.Dni == numDni)
-                    {
-                        return cliente;
-                    }
+                    return cliente;
                 }
-                throw new ElementoNoEncontradoException("No se encontró ningún cliente con ese DNI.");
             }
-            catch (ClienteExistenteException ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null; // Otra opción podría ser lanzar la excepción hacia arriba.
-            }
+            throw new ElementoNoEncontradoException("No se encontró ningún cliente con ese DNI.");
         }
 
+        /// <summary>
+        /// Carga la lista de vehículos disponibles para alquilar en el ListBox.
+        /// </summary>
         private void CargarListaVehiculosDisp()
         {
-            //this.lstVehiculosDisp.Items.Clear();
-            //foreach (Vehiculo vehiculo in this.formMain.ListaVehiculos)
-            //{
-            //    if (vehiculo.Disponible == true)
-            //    {
-            //        this.lstVehiculosDisp.Items.Add(vehiculo);
-            //    }
-            //}
-
             try
             {
                 this.lstVehiculosDisp.Items.Clear();
-                this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+                this.formularioMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
 
                 // Filtra los vehículos disponibles y ordena por Tipo utilizando LINQ
-                IOrderedEnumerable<Vehiculo>? vehiculosDisponiblesOrdenados = this.formMain.ListaVehiculos
+                IOrderedEnumerable<Vehiculo>? vehiculosDisponiblesOrdenados = this.formularioMain.ListaVehiculos
                     .Where(vehiculo => vehiculo.Disponible)
                     .OrderBy(vehiculo => vehiculo.Tipo)
                     .ThenBy(vehiculo => vehiculo.Anio);
@@ -144,9 +144,11 @@ namespace Formularios
             {
                 MessageBox.Show(ex.Message, "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
 
+        /// <summary>
+        /// Confirma la reserva de un vehículo para un cliente, realiza el proceso de guardado en la base de datos y el pago.
+        /// </summary>
         private void btnConfirmarReserva_Click(object sender, EventArgs e)
         {
             try
@@ -154,7 +156,7 @@ namespace Formularios
                 if (this.lstVehiculosDisp.SelectedItem is not null)
                 {
                     int.TryParse(this.txtDniCliente.Text, out int numDni);
-                    Cliente clienteBuscado = this.BuscarPorDni(numDni, this.formMain.ListaClientes);
+                    Cliente clienteBuscado = this.BuscarPorDni(numDni, this.formularioMain.ListaClientes);
 
                     Vehiculo vehiculoSelecc = (Vehiculo)this.lstVehiculosDisp.SelectedItem;
                     vehiculoSelecc.Disponible = false;
@@ -180,9 +182,11 @@ namespace Formularios
             {
                 MessageBox.Show("No existe una base de datos RESERVAS", "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
 
+        /// <summary>
+        /// Carga la lista de reservas que están vigentes en el ListBox de reservas.
+        /// </summary>
         private void CargarListaReservas()
         {
             this.lstReservas.Items.Clear();
@@ -193,9 +197,11 @@ namespace Formularios
                     this.lstReservas.Items.Add(reserva);
                 }
             }
-
         }
 
+        /// <summary>
+        /// Cancela la reserva seleccionada, marcando la reserva como no vigente y liberando el vehículo asociado.
+        /// </summary>
         private void btnCancelarReserva_Click(object sender, EventArgs e)
         {
             if (this.lstReservas.SelectedItem is not null)
@@ -206,14 +212,16 @@ namespace Formularios
                 Vehiculo vehiculoAModificar = reservaSeleccionada.Vehiculo;
                 vehiculoAModificar.Disponible = true;
                 VehiculoDAO.Modificar(vehiculoAModificar, reservaSeleccionada.PatenteVehiculo);
-                this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+                this.formularioMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
                 MessageBox.Show("La reserva se canceló con éxito", "Reserva cancelada", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
             this.CargarListaVehiculosDisp();
             this.CargarListaReservas();
-
         }
 
+        /// <summary>
+        /// Exporta las reservas vigentes a un archivo JSON y muestra un mensaje de éxito o advertencia.
+        /// </summary>
         private void btnExportarReservas_Click(object sender, EventArgs e)
         {
             if (this.ListaReservas is not null)
@@ -225,9 +233,12 @@ namespace Formularios
             {
                 MessageBox.Show("No hay reservas para exportar", "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
 
+        /// <summary>
+        /// Exporta la lista de reservas proporcionada a un archivo JSON en el escritorio del usuario.
+        /// </summary>
+        /// <param name="listaReservas">Lista de reservas a exportar.</param>
         private void ExportarJson(List<Reserva> listaReservas)
         {
             string escritorioPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -237,7 +248,6 @@ namespace Formularios
             {
                 Directory.CreateDirectory(carpetaDeLaSolucion);
             }
-
             string rutaCompleta = Path.Combine(carpetaDeLaSolucion, "reservasVigentes.json");
             JsonSerializerOptions options = new JsonSerializerOptions();
             options.WriteIndented = true;
@@ -245,6 +255,9 @@ namespace Formularios
             File.WriteAllText(rutaCompleta, jsonListaReservas);
         }
 
+        /// <summary>
+        /// Maneja el evento de importación de vehículos desde un archivo JSON seleccionado por el usuario si existe una lista de vehículos.
+        /// </summary>
         private void btnImportarVehiculos_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -252,8 +265,8 @@ namespace Formularios
             openFileDialog.ShowDialog();
             try
             {
-                this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
-                this.ImportarConfig(openFileDialog.FileName, this.formMain.ListaVehiculos);
+                this.formularioMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+                this.ImportarConfig(openFileDialog.FileName, this.formularioMain.ListaVehiculos);
             }
             catch (BaseDeDatosException)
             {
@@ -262,6 +275,11 @@ namespace Formularios
             this.CargarListaVehiculosDisp();
         }
 
+        /// <summary>
+        /// Importa la configuración de vehículos desde un archivo JSON y guarda aquellos que no existen en la lista proporcionada.
+        /// </summary>
+        /// <param name="path">Ruta del archivo JSON a importar.</param>
+        /// <param name="listaVehiculosDisp">Lista de vehículos disponibles.</param>
         private void ImportarConfig(string path, List<Vehiculo> listaVehiculosDisp)
         {
             try
@@ -273,7 +291,7 @@ namespace Formularios
 
                 foreach (Vehiculo vehiculo in listaVehiculos)
                 {
-                    if (!this.ValidarVehiculoExistente(vehiculo, this.formMain.ListaVehiculos))
+                    if (!this.ValidarVehiculoExistente(vehiculo, this.formularioMain.ListaVehiculos))
                     {
                         VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
                         vehiculoDAO.Guardar(vehiculo);
@@ -293,6 +311,10 @@ namespace Formularios
             }
         }
 
+        /// <summary>
+        /// Importa la configuración de vehículos desde un archivo JSON si la lista de vehículos está vacía.
+        /// </summary>
+        /// <param name="path">Ruta del archivo JSON a importar.</param>
         private void ImportarConfigSiListaVacia(string path)
         {
             try
@@ -321,11 +343,21 @@ namespace Formularios
             }
         }
 
+        /// <summary>
+        /// Valida si un vehículo ya existe en la lista de vehículos proporcionada, a través de su patente.
+        /// </summary>
+        /// <param name="vehiculo">Vehículo a validar.</param>
+        /// <param name="listaVehiculos">Lista de vehículos en la que se realiza la búsqueda.</param>
+        /// <returns>True si el vehículo ya existe en la lista, False en caso contrario.</returns>
         private bool ValidarVehiculoExistente(Vehiculo vehiculo, List<Vehiculo> listaVehiculos)
         {
             return listaVehiculos.Any(item => item.Patente == vehiculo.Patente);
         }
 
+        /// <summary>
+        /// Muestra un mensaje de error con detalles de la excepción proporcionada.
+        /// </summary>
+        /// <param name="ex">Excepción que se desea mostrar.</param>
         private void MostrarMensajeDeError(Exception ex)
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -336,8 +368,13 @@ namespace Formularios
             MessageBox.Show(stringBuilder.ToString(), "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        /// Inicia el procesamiento simulado de un pago utilizando eventos de verificación, éxito y finalización del pago.
+        /// </summary>
         private void ProcesarPago()
         {
+            // Inicia una nueva tarea en un hilo secundario.
+            // Utiliza un ciclo do-while para simular la verificación, éxito y finalización del pago.
             this.cancellation = new CancellationTokenSource();
             Task.Run(() =>
             {
@@ -345,10 +382,13 @@ namespace Formularios
                 {
                     if (this.OnVerificacionPago is not null && this.OnPagoOk is not null)
                     {
+                        // Invoca el evento de verificación del pago y espera simulada.
                         this.OnVerificacionPago.Invoke("Verificando medio de pago...");
                         Thread.Sleep(3500);
+                        // Invoca el evento de éxito del pago.
                         this.OnPagoOk.Invoke("El pago se realizó con éxito");
                         Thread.Sleep(2000);
+                        // Invoca el evento de finalización del pago y cancela la tarea.
                         this.OnPagoOff.Invoke();
                         this.cancellation.Cancel();
                     }
@@ -356,11 +396,16 @@ namespace Formularios
             }, this.cancellation.Token);
         }
 
-
+        /// <summary>
+        /// Método manejador del evento OnVerificacionPago que muestra un mensaje de verificación de pago en el formulario.
+        /// </summary>
+        /// <param name="mensaje">Mensaje de verificación de pago.</param>
         private void MostrarVerificacionPago(string mensaje)
         {
+            // Verifica si es necesario invocar el método en el hilo de la interfaz de usuario.
             if (this.InvokeRequired)
             {
+                // Invoca el método en el hilo de la interfaz de usuario utilizando.
                 this.BeginInvoke(() => this.MostrarVerificacionPago(mensaje));
             }
             else
@@ -371,6 +416,10 @@ namespace Formularios
             }
         }
 
+        /// <summary>
+        /// Método manejador del evento OnPagoOK que muestra un mensaje de éxito de pago en el formulario.
+        /// </summary>
+        /// <param name="mensaje">Mensaje de éxito de pago.</param>
         private void MostrarPagoOk(string mensaje)
         {
             if (this.InvokeRequired)
@@ -384,6 +433,9 @@ namespace Formularios
             }
         }
 
+        /// <summary>
+        /// Método manejador del evento OnPagoOff que finaliza el pago y oculta el mensaje en el formulario.
+        /// </summary>
         private void BorrarPago()
         {
             if (this.InvokeRequired)

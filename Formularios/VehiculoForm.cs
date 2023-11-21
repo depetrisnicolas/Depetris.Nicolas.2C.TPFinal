@@ -18,19 +18,22 @@ namespace Formularios
 {
     public partial class VehiculoForm : Form
     {
-        private MainForm formMain;
+        //ATRIBUTOS
+        private MainForm formularioMain;
         private ValidarCaractAlfanumericosDelegate delegadoValidarAlfanumericos;
+
+        //CONSTRUCTOR
         public VehiculoForm(MainForm mainForm)
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.formMain = mainForm;
+            this.formularioMain = mainForm;
             this.delegadoValidarAlfanumericos = new ValidarCaractAlfanumericosDelegate(cadena =>
                 Regex.IsMatch(cadena, "^[a-zA-Z0-9]+$") ? cadena : null);
         }
 
         /// <summary>
-        /// Realiza la validación de los datos ingresados y guarda un nuevo vehiculo en la base de datos.
+        /// Guarda un nuevo vehículo en la base de datos.
         /// </summary>
         private void btnGuardar_Click(object sender, EventArgs e)
         {
@@ -91,22 +94,22 @@ namespace Formularios
                     Vehiculo nuevoVehiculo = new Vehiculo(marca, modelo, numAnio, tipo, patente, true);
 
                     //Si todavía no hay vehículos guardados en la base de datos
-                    if (this.formMain.ListaVehiculos is null)
+                    if (this.formularioMain.ListaVehiculos is null)
                     {
-                        this.formMain.ListaVehiculos = new List<Vehiculo>();
+                        this.formularioMain.ListaVehiculos = new List<Vehiculo>();
                         VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
                         vehiculoDAO.Guardar(nuevoVehiculo);
-                        this.formMain.ListaVehiculos.Add(nuevoVehiculo);
+                        this.formularioMain.ListaVehiculos.Add(nuevoVehiculo);
                         MessageBox.Show("El vehiculo se guardó correctamente", "Alta Vehiculo", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         this.Close();
                     }
                     //Si la lista de vehículos ya fue creada verifica que el vehículo no exista
-                    else if (!this.ValidarVehiculoExistente(nuevoVehiculo, this.formMain.ListaVehiculos))
+                    else if (!this.ValidarVehiculoExistente(nuevoVehiculo, this.formularioMain.ListaVehiculos))
                     {
-                        this.formMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
+                        this.formularioMain.ListaVehiculos = VehiculoDAO.LeerVehiculos();
                         VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
                         vehiculoDAO.Guardar(nuevoVehiculo);
-                        this.formMain.ListaVehiculos.Add(nuevoVehiculo);
+                        this.formularioMain.ListaVehiculos.Add(nuevoVehiculo);
                         MessageBox.Show("El vehiculo se guardó correctamente", "Alta Vehiculo", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         this.Close();
                     }

@@ -493,9 +493,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\nico_\\Desktop\\Programación y Laboratorio II\\Ejercicio_Integrador2\\Depetris.Nicolas.2C.TPFinal\\Pruebas\\Pruebas.csproj",
-      "projectName": "Pruebas",
-      "projectPath": "C:\\Users\\nico_\\Desktop\\Programación y Laboratorio II\\Ejercicio_Integrador2\\Depetris.Nicolas.2C.TPFinal\\Pruebas\\Pruebas.csproj",
+      "projectUniqueName": "C:\\Users\\nico_\\Desktop\\Programación y Laboratorio II\\Ejercicio_Integrador2\\Depetris.Nicolas.2C.TPFinal\\Pruebas\\Vista.csproj",
+      "projectName": "Vista",
+      "projectPath": "C:\\Users\\nico_\\Desktop\\Programación y Laboratorio II\\Ejercicio_Integrador2\\Depetris.Nicolas.2C.TPFinal\\Pruebas\\Vista.csproj",
       "packagesPath": "C:\\Users\\nico_\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\nico_\\Desktop\\Programación y Laboratorio II\\Ejercicio_Integrador2\\Depetris.Nicolas.2C.TPFinal\\Pruebas\\obj\\",
       "projectStyle": "PackageReference",
