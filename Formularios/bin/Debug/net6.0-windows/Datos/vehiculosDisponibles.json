@@ -72,4 +72,13 @@
   "Patente": "JKP555",
   "Disponible": true
 }
+,
+{
+  "Marca": "Volkswagen",
+  "Modelo": "Up",
+  "Anio": 2018,
+  "Tipo": "Auto",
+  "Patente": "AC500VX",
+  "Disponible": true
+}
 ]

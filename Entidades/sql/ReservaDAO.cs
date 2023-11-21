@@ -32,7 +32,7 @@ namespace Entidades.sql
         /// </summary>
         /// <param name="reserva">Instancia de la clase Reserva que se va a almacenar.</param>
         /// <exception cref="BaseDeDatosException">Se lanza si ocurre un error al interactuar con la base de datos.</exception>
-        public void Guardar(Reserva reserva)
+        void IGuardar<Reserva>.Guardar(Reserva reserva)
         {
             try
             {

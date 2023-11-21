@@ -19,6 +19,7 @@ using Microsoft.VisualBasic.ApplicationServices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Diagnostics;
 using System.Threading;
+using Entidades.interfaz;
 
 namespace Formularios
 {
@@ -166,7 +167,7 @@ namespace Formularios
                         this.dtpDesde.Value, this.dtpHasta.Value, true);
 
                     ReservaDAO reservaDAO = new ReservaDAO("Reservas");
-                    reservaDAO.Guardar(nuevaReserva);
+                    ((IGuardar<Reserva>)reservaDAO).Guardar(nuevaReserva);
                     if (this.ListaReservas is null)
                     {
                         this.ListaReservas = new List<Reserva>();
@@ -279,8 +280,8 @@ namespace Formularios
         /// Importa la configuración de vehículos desde un archivo JSON y guarda aquellos que no existen en la lista proporcionada.
         /// </summary>
         /// <param name="path">Ruta del archivo JSON a importar.</param>
-        /// <param name="listaVehiculosDisp">Lista de vehículos disponibles.</param>
-        private void ImportarConfig(string path, List<Vehiculo> listaVehiculosDisp)
+        /// <param name="listaVehiculosEnStock">Lista de vehículos en stock de la empresa.</param>
+        private void ImportarConfig(string path, List<Vehiculo> listaVehiculosEnStock)
         {
             try
             {
@@ -291,7 +292,7 @@ namespace Formularios
 
                 foreach (Vehiculo vehiculo in listaVehiculos)
                 {
-                    if (!this.ValidarVehiculoExistente(vehiculo, this.formularioMain.ListaVehiculos))
+                    if (!this.ValidarVehiculoExistente(vehiculo, listaVehiculosEnStock))
                     {
                         VehiculoDAO vehiculoDAO = new VehiculoDAO("Vehiculos");
                         vehiculoDAO.Guardar(vehiculo);
