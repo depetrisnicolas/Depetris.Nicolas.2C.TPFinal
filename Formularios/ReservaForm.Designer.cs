@@ -249,7 +249,7 @@
             Controls.Add(lstReservas);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "ReservaForm";
-            Text = "ReservaForm";
+            Text = "Reservas";
             Load += ReservaForm_Load;
             ResumeLayout(false);
             PerformLayout();

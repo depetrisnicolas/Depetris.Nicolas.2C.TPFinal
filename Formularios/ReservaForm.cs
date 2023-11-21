@@ -70,7 +70,7 @@ namespace Formularios
                 this.OnPagoOk += this.MostrarPagoOk;
                 this.OnPagoOff += this.BorrarPago;
             }
-            catch(BaseDeDatosException ex)
+            catch (BaseDeDatosException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -92,7 +92,7 @@ namespace Formularios
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch(BaseDeDatosException ex)
+            catch (BaseDeDatosException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -190,7 +190,7 @@ namespace Formularios
         private void CargarListaReservas()
         {
             this.lstReservas.Items.Clear();
-            if(this.listaReservas is not null)
+            if (this.listaReservas is not null)
             {
                 foreach (Reserva reserva in this.ListaReservas.FiltrarReservasVigentes())
                 {
@@ -354,7 +354,7 @@ namespace Formularios
             return listaVehiculos.Any(item => item.Patente == vehiculo.Patente);
         }
 
-        /// <summary>
+        /// <summary>|
         /// Muestra un mensaje de error con detalles de la excepción proporcionada.
         /// </summary>
         /// <param name="ex">Excepción que se desea mostrar.</param>
