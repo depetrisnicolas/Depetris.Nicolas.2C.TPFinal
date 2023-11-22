@@ -39,9 +39,9 @@ namespace Formularios
         //CANCELACION HILO SECUNDARIO
         private CancellationTokenSource cancellation;
         //EVENTOS
-        public event DelegateVerificacionPagoHandler OnVerificarPago;
-        public event DelegatePagoOkHandler OnConfirmarPago;
-        public event DelegatePagoOffHandler OnFinalizarPago;
+        public event DelegateVerificacionPagoHandler OnVericacionPago;
+        public event DelegatePagoOkHandler OnConfirmacionPago;
+        public event DelegatePagoOffHandler OnFinalizacionPago;
 
         //CONSTRUCTOR
         public ReservaForm(MainForm mainForm)
@@ -67,9 +67,9 @@ namespace Formularios
                 this.ListaReservas = ReservaDAO.LeerReservas();
                 this.CargarListaReservas();
                 this.CargarListaVehiculosDisp();
-                this.OnVerificarPago += this.MostrarVerificacionPago;
-                this.OnConfirmarPago += this.MostrarPagoOk;
-                this.OnFinalizarPago += this.QuitarPago;
+                this.OnVericacionPago += this.MostrarVerificacionPago;
+                this.OnConfirmacionPago += this.MostrarPagoOk;
+                this.OnFinalizacionPago += this.QuitarPago;
             }
             catch (BaseDeDatosException ex)
             {
@@ -381,16 +381,16 @@ namespace Formularios
             {
                 do
                 {
-                    if (this.OnVerificarPago is not null && this.OnConfirmarPago is not null & this.OnFinalizarPago is not null)
+                    if (this.OnVericacionPago is not null && this.OnConfirmacionPago is not null & this.OnFinalizacionPago is not null)
                     {
                         // Invoca el evento de verificación del pago y espera simulada.
-                        this.OnVerificarPago.Invoke("Verificando medio de pago...");
+                        this.OnVericacionPago.Invoke("Verificando medio de pago...");
                         Thread.Sleep(3500);
                         // Invoca el evento de éxito del pago.
-                        this.OnConfirmarPago.Invoke("El pago se realizó con éxito");
+                        this.OnConfirmacionPago.Invoke("El pago se realizó con éxito");
                         Thread.Sleep(2000);
                         // Invoca el evento de finalización del pago y cancela la tarea.
-                        this.OnFinalizarPago.Invoke();
+                        this.OnFinalizacionPago.Invoke();
                         this.cancellation.Cancel();
                     }
                 } while (!this.cancellation.IsCancellationRequested);
