@@ -1,5 +1,7 @@
 using Entidades;
+using Entidades.excepciones;
 using Entidades.metodoExtension;
+using Entidades.sql;
 
 namespace UnitTests
 {
@@ -42,6 +44,7 @@ namespace UnitTests
 
         }
 
+
         [TestMethod]
         /// <summary>
         /// Verifica que al invocar el método FiltrarReservasVigentes con una lista vacía, devuelva cero reservas vigentes.
@@ -57,6 +60,21 @@ namespace UnitTests
             // Assert
             Assert.AreEqual(0, resultado.Count); // Debería ser una lista vacía
         }
-            
+
+
+        /// <summary>
+        /// Verifica que al invocar el método ClienteDAOtest.Guardar() con una base de datos inexistente, se lance una excepción del 
+        /// tipo BaseDeDatosException.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(BaseDeDatosException))]
+        public void AlInvocarAlMetodoGuardarDeClienteDAOtest_SiLaBaseDeDatosNoExiste_DeberiaLanzarUnaExcepcion()
+        {
+            // Arrange
+            Cliente cliente = new Cliente("Julieta", "Ortega", 25777904, "69228640");
+
+            // Act
+            ClienteDAOtest.Guardar(cliente);
+        }            
     }
 }

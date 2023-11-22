@@ -24,9 +24,9 @@ using Entidades.interfaz;
 namespace Formularios
 {
     //DELEGADOS
-    public delegate void DelegateVerificacionPago(string mensaje);
-    public delegate void DelegatePagoOk(string mensaje);
-    public delegate void DelegatePagoOff();
+    public delegate void DelegateVerificacionPagoHandler(string mensaje);
+    public delegate void DelegatePagoOkHandler(string mensaje);
+    public delegate void DelegatePagoOffHandler();
 
 
     public partial class ReservaForm : Form
@@ -35,13 +35,13 @@ namespace Formularios
         private MainForm formularioMain;
         private List<Reserva> listaReservas;
         public BuscarPorDniDelegate delegadoBuscarPorDni;
+
         //CANCELACION HILO SECUNDARIO
         private CancellationTokenSource cancellation;
-
         //EVENTOS
-        public event DelegateVerificacionPago OnVerificacionPago;
-        public event DelegatePagoOk OnPagoOk;
-        public event DelegatePagoOff OnPagoOff;
+        public event DelegateVerificacionPagoHandler OnVerificarPago;
+        public event DelegatePagoOkHandler OnConfirmarPago;
+        public event DelegatePagoOffHandler OnFinalizarPago;
 
         //CONSTRUCTOR
         public ReservaForm(MainForm mainForm)
@@ -67,9 +67,9 @@ namespace Formularios
                 this.ListaReservas = ReservaDAO.LeerReservas();
                 this.CargarListaReservas();
                 this.CargarListaVehiculosDisp();
-                this.OnVerificacionPago += this.MostrarVerificacionPago;
-                this.OnPagoOk += this.MostrarPagoOk;
-                this.OnPagoOff += this.BorrarPago;
+                this.OnVerificarPago += this.MostrarVerificacionPago;
+                this.OnConfirmarPago += this.MostrarPagoOk;
+                this.OnFinalizarPago += this.QuitarPago;
             }
             catch (BaseDeDatosException ex)
             {
@@ -381,16 +381,16 @@ namespace Formularios
             {
                 do
                 {
-                    if (this.OnVerificacionPago is not null && this.OnPagoOk is not null)
+                    if (this.OnVerificarPago is not null && this.OnConfirmarPago is not null & this.OnFinalizarPago is not null)
                     {
                         // Invoca el evento de verificación del pago y espera simulada.
-                        this.OnVerificacionPago.Invoke("Verificando medio de pago...");
+                        this.OnVerificarPago.Invoke("Verificando medio de pago...");
                         Thread.Sleep(3500);
                         // Invoca el evento de éxito del pago.
-                        this.OnPagoOk.Invoke("El pago se realizó con éxito");
+                        this.OnConfirmarPago.Invoke("El pago se realizó con éxito");
                         Thread.Sleep(2000);
                         // Invoca el evento de finalización del pago y cancela la tarea.
-                        this.OnPagoOff.Invoke();
+                        this.OnFinalizarPago.Invoke();
                         this.cancellation.Cancel();
                     }
                 } while (!this.cancellation.IsCancellationRequested);
@@ -403,10 +403,10 @@ namespace Formularios
         /// <param name="mensaje">Mensaje de verificación de pago.</param>
         private void MostrarVerificacionPago(string mensaje)
         {
-            // Verifica si es necesario invocar el método en el hilo de la interfaz de usuario.
+            // Verifica si necesita ser invocado el hilo principal 
             if (this.InvokeRequired)
             {
-                // Invoca el método en el hilo de la interfaz de usuario utilizando.
+                // Invoca el método en el hilo de la interfaz de usuario.
                 this.BeginInvoke(() => this.MostrarVerificacionPago(mensaje));
             }
             else
@@ -437,11 +437,11 @@ namespace Formularios
         /// <summary>
         /// Método manejador del evento OnPagoOff que finaliza el pago y oculta el mensaje en el formulario.
         /// </summary>
-        private void BorrarPago()
+        private void QuitarPago()
         {
             if (this.InvokeRequired)
             {
-                this.BeginInvoke(() => this.BorrarPago());
+                this.BeginInvoke(() => this.QuitarPago());
             }
             else
             {
