@@ -85,9 +85,9 @@ namespace Entidades.sql
                     {
                         while (reader.Read())
                         {
-                            Cliente cliente = MetodoGenerico.LeerElementoPorPropiedad(reader.GetInt32(1), ClienteDAO.LeerClientes(),
+                            Cliente cliente = MetodoGenerico.BuscarElementoPorPropiedad(reader.GetInt32(1), ClienteDAO.LeerClientes(),
                                 c => c.Dni);
-                            Vehiculo vehiculo = MetodoGenerico.LeerElementoPorPropiedad(reader.GetString(3), VehiculoDAO.LeerVehiculos(), 
+                            Vehiculo vehiculo = MetodoGenerico.BuscarElementoPorPropiedad(reader.GetString(3), VehiculoDAO.LeerVehiculos(), 
                                 v => v.Patente);
 
                             Reserva reserva = new Reserva(cliente, reader.GetInt32(1), vehiculo, reader.GetString(3), reader.GetDateTime(4), reader.GetDateTime(5), 

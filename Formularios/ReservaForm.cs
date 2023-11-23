@@ -119,7 +119,7 @@ namespace Formularios
         }
 
         /// <summary>
-        /// Carga la lista de vehículos disponibles para alquilar en el ListBox.
+        /// Carga la lista de vehículos disponibles para alquilar en el ListBox ordenados de forma ASC primero por Tipo y luego por Año.
         /// </summary>
         private void CargarListaVehiculosDisp()
         {
@@ -185,18 +185,31 @@ namespace Formularios
             }
         }
 
+
         /// <summary>
-        /// Carga la lista de reservas que están vigentes en el ListBox de reservas.
+        /// Carga la lista de reservas que están vigentes en el ListBox de reservas ordenadas de forma ASC por fecha de inicio.
         /// </summary>
         private void CargarListaReservas()
         {
-            this.lstReservas.Items.Clear();
-            if (this.listaReservas is not null)
+            try
             {
-                foreach (Reserva reserva in this.ListaReservas.FiltrarReservasVigentes())
+                this.lstReservas.Items.Clear();
+
+                if (this.listaReservas is not null)
                 {
-                    this.lstReservas.Items.Add(reserva);
+                    // Filtrar y ordenar las reservas por FechaInicio
+                    var reservasOrdenadas = this.listaReservas.FiltrarReservasVigentes()
+                        .OrderBy(reserva => reserva.FechaInicio);
+
+                    foreach (Reserva reserva in reservasOrdenadas)
+                    {
+                        this.lstReservas.Items.Add(reserva);
+                    }
                 }
+            }
+            catch (BaseDeDatosException ex)
+            {
+                MessageBox.Show(ex.Message, "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

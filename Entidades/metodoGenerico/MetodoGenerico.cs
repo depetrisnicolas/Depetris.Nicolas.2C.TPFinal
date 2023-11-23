@@ -1,5 +1,6 @@
 ﻿using Entidades.excepciones;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,18 +17,21 @@ namespace Entidades.metodoGenerico
         /// <typeparam name="TPropiedad">Tipo de propiedad a comparar.</typeparam>
         /// <param name="valorPropiedad">Valor de la propiedad a buscar.</param>
         /// <param name="lista">Lista en la que se realizará la búsqueda.</param>
-        /// <param name="obtenerPropiedad">Función que obtiene el valor de la propiedad del elemento.</param>
+        /// <param name="obtenerValorPropiedad">Función que obtiene el valor de la propiedad del elemento.</param>
         /// <returns>El primer elemento encontrado que coincide con el valor de la propiedad.</returns>
         /// <exception cref="ElementoNoEncontradoException">Se lanza si no se encuentra ningún elemento con el valor de la propiedad
         /// proporcionado.</exception>
-        public static T LeerElementoPorPropiedad<T, TPropiedad>(TPropiedad valorPropiedad, List<T> lista, Func<T, TPropiedad> obtenerPropiedad)
+        public static T BuscarElementoPorPropiedad<T, TPropiedad>(TPropiedad valorPropiedad, List<T> lista, Func<T, TPropiedad> obtenerValorPropiedad)
             where T:class
         {
             try
             {
                 foreach (T elemento in lista)
                 {
-                    if (EqualityComparer<TPropiedad>.Default.Equals(obtenerPropiedad(elemento), valorPropiedad))
+                    //Verifica si el valor de la propiedad del elemento actual es igual al valor de propiedad proporcionado.
+                    //EqualityComparer<TPropiedad>.Default.Equals se utiliza para comparar los valores de manera segura,
+                    //incluso si TPropiedad no implementa la interfaz IEqualityComparer.
+                    if (EqualityComparer<TPropiedad>.Default.Equals(obtenerValorPropiedad(elemento), valorPropiedad))
                     {
                         return elemento;
                     }
