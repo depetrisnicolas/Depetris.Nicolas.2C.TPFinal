@@ -143,7 +143,7 @@ namespace Formularios
             }
             catch (BaseDeDatosException ex)
             {
-                MessageBox.Show(ex.Message, "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -181,7 +181,7 @@ namespace Formularios
             }
             catch (BaseDeDatosException)
             {
-                MessageBox.Show("No existe una base de datos RESERVAS", "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("No existe una base de datos RESERVAS", "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -203,13 +203,26 @@ namespace Formularios
 
                     foreach (Reserva reserva in reservasOrdenadas)
                     {
-                        this.lstReservas.Items.Add(reserva);
+                        // Verificar si la FechaFin es posterior al día de la fecha actual
+                        if (reserva.FechaFin >= DateTime.Now)
+                        {
+                            this.lstReservas.Items.Add(reserva);
+                        }
+                        // Si es posterior, la reserva ya no está vigente y el vehiculo vuelve a estar disponible
+                        else
+                        {
+                            reserva.Vigente = false;
+                            ReservaDAO.Modificar(reserva, reserva.DniCliente);
+                            Vehiculo vehiculoAModificar = reserva.Vehiculo;
+                            vehiculoAModificar.Disponible = true;
+                            VehiculoDAO.Modificar(vehiculoAModificar, reserva.PatenteVehiculo);
+                        }
                     }
                 }
             }
             catch (BaseDeDatosException ex)
             {
-                MessageBox.Show(ex.Message, "Exportar Reservas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, "Alerta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
