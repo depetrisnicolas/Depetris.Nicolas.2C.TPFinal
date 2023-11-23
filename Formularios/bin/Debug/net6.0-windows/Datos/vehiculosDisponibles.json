@@ -81,4 +81,13 @@
   "Patente": "AC500VX",
   "Disponible": true
 }
+,
+{
+  "Marca": "Renault",
+  "Modelo": "Duster",
+  "Anio": 2023,
+  "Tipo": "Camioneta",
+  "Patente": "AF678TY",
+  "Disponible": true
+}
 ]

@@ -324,7 +324,7 @@ namespace Formularios
                         vehiculoDAO.Guardar(vehiculo);
                     }
                 }
-                MessageBox.Show("Vehiculos cargados correctamente", "Importar vehiculos", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBox.Show("Listado vehiculos actualizado", "Importar vehiculos", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
 
             catch (JsonException)
