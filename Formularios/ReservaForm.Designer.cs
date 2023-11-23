@@ -185,6 +185,7 @@
             // 
             txtNombreYApellido.Location = new Point(25, 109);
             txtNombreYApellido.Name = "txtNombreYApellido";
+            txtNombreYApellido.ReadOnly = true;
             txtNombreYApellido.Size = new Size(211, 23);
             txtNombreYApellido.TabIndex = 14;
             // 
